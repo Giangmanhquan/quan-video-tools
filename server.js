@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { execFile } = require("child_process");
@@ -11,312 +12,207 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-/* HOST FILE HTML */
-
 app.use(express.static(__dirname));
 
-/* THƯ MỤC DOWNLOAD */
+const uploadDir = path.join(__dirname, "uploads");
+const outputDir = path.join(__dirname, "downloads");
 
-const downloadDir = path.join(
-    __dirname,
-    "downloads"
-);
-
-if (!fs.existsSync(downloadDir)) {
-    fs.mkdirSync(downloadDir);
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
 }
 
-/* ĐƯỜNG DẪN YT-DLP */
+if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir);
+}
 
-const YTDLP_PATH =
-    process.env.YTDLP_PATH || "yt-dlp";
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir);
+    },
 
-/* TEST SERVER */
+    filename: function (req, file, cb) {
+        const uniqueName =
+            Date.now() + "-" + file.originalname.replace(/\s+/g, "-");
 
-app.get("/", (req, res) => {
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
+        cb(null, uniqueName);
+    }
 });
 
-/* HÀM CHẠY YT-DLP */
+const upload = multer({
+    storage: storage,
 
-async function runYtDlp(args) {
-    return await execFileAsync(
-        YTDLP_PATH,
-        args,
-        {
-            maxBuffer:
-                1024 * 1024 * 200
+    limits: {
+        fileSize: 300 * 1024 * 1024
+    },
+
+    fileFilter: function (req, file, cb) {
+        if (!file.mimetype.startsWith("video/")) {
+            return cb(new Error("Chỉ cho phép upload file video"));
         }
-    );
+
+        cb(null, true);
+    }
+});
+
+function deleteFile(filePath) {
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+    }
 }
 
-/* LẤY THÔNG TIN VIDEO */
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
 
-app.post("/download", async (req, res) => {
+/* CHUYỂN VIDEO SANG MP3 */
+
+app.post("/convert-mp3", upload.single("video"), async (req, res) => {
     try {
-        const { url } = req.body;
-
-        if (!url) {
+        if (!req.file) {
             return res.status(400).json({
-                error: "Thiếu URL"
+                error: "Bạn chưa upload video"
             });
         }
 
-        console.log("Đang lấy thông tin video...");
+        const inputPath = req.file.path;
 
-        const { stdout } = await runYtDlp([
-            url,
-            "--dump-single-json",
-            "--no-warnings",
-            "--no-check-certificates"
+        const outputName =
+            `audio-${Date.now()}.mp3`;
+
+        const outputPath =
+            path.join(outputDir, outputName);
+
+        console.log("Đang chuyển video sang MP3...");
+
+        await execFileAsync("ffmpeg", [
+            "-i",
+            inputPath,
+
+            "-vn",
+
+            "-ar",
+            "44100",
+
+            "-ac",
+            "2",
+
+            "-b:a",
+            "192k",
+
+            outputPath
         ]);
 
-        const info = JSON.parse(stdout);
+        deleteFile(inputPath);
 
-        const qualities = [...new Set(
-            info.formats
-                .filter(f =>
-                    f.height &&
-                    f.vcodec !== "none"
-                )
-                .map(f => f.height)
-        )].sort((a, b) => a - b);
-
-        const formats = qualities.map(height => ({
-            quality:
-                height + "p",
-
-            height:
-                height
-        }));
-
-        console.log("Lấy thông tin thành công");
+        console.log("Chuyển MP3 xong:", outputPath);
 
         res.json({
-            title:
-                info.title,
-
-            thumbnail:
-                info.thumbnail,
-
-            videoUrl:
-                url,
-
-            formats
+            success: true,
+            message: "Chuyển MP3 thành công",
+            downloadUrl: `/download/${outputName}`
         });
 
     } catch (error) {
-        console.log(
-            "Lỗi lấy thông tin:",
-            error
-        );
+        console.log("Lỗi chuyển MP3:", error);
+
+        if (req.file) {
+            deleteFile(req.file.path);
+        }
 
         res.status(500).json({
-            error:
-                "Không lấy được video"
+            error: "Lỗi chuyển video sang MP3"
         });
     }
 });
 
-/* DOWNLOAD VIDEO */
+/* NÉN VIDEO */
 
-app.get("/download-video", async (req, res) => {
+app.post("/compress-video", upload.single("video"), async (req, res) => {
     try {
-        const url =
-            req.query.url;
-
-        const height =
-            req.query.height || 720;
-
-        if (!url) {
-            return res.status(400).send(
-                "Thiếu URL"
-            );
+        if (!req.file) {
+            return res.status(400).json({
+                error: "Bạn chưa upload video"
+            });
         }
 
-        const id =
-            Date.now();
+        const inputPath = req.file.path;
 
-        const outputTemplate =
-            path.join(
-                downloadDir,
-                `video-${id}.%(ext)s`
-            );
+        const outputName =
+            `compressed-${Date.now()}.mp4`;
 
-        console.log("Đang tải video...");
+        const outputPath =
+            path.join(outputDir, outputName);
 
-        await runYtDlp([
-            url,
+        console.log("Đang nén video...");
 
-            "-f",
-            `bestvideo[height<=${height}][ext=mp4]+bestaudio[ext=m4a]/best[height<=${height}][ext=mp4]/best`,
+        await execFileAsync("ffmpeg", [
+            "-i",
+            inputPath,
 
-            "--merge-output-format",
-            "mp4",
+            "-vcodec",
+            "libx264",
 
-            "-o",
-            outputTemplate,
+            "-crf",
+            "28",
 
-            "--no-warnings",
-            "--no-check-certificates",
-            "--windows-filenames"
+            "-preset",
+            "veryfast",
+
+            "-acodec",
+            "aac",
+
+            "-b:a",
+            "128k",
+
+            outputPath
         ]);
 
-        const files =
-            fs.readdirSync(downloadDir);
+        deleteFile(inputPath);
 
-        const videoFile =
-            files.find(file =>
-                file.startsWith(`video-${id}`) &&
-                file.endsWith(".mp4")
-            );
+        console.log("Nén video xong:", outputPath);
 
-        if (!videoFile) {
-            console.log("Không tìm thấy file MP4");
-
-            return res.status(500).send(
-                "Không tạo được video. Kiểm tra FFmpeg hoặc yt-dlp."
-            );
-        }
-
-        const filePath =
-            path.join(downloadDir, videoFile);
-
-        console.log(
-            "Đã tạo xong:",
-            filePath
-        );
-
-        res.download(
-            filePath,
-            "video.mp4",
-            err => {
-                if (err) {
-                    console.log(
-                        "Lỗi gửi file:",
-                        err
-                    );
-                }
-            }
-        );
+        res.json({
+            success: true,
+            message: "Nén video thành công",
+            downloadUrl: `/download/${outputName}`
+        });
 
     } catch (error) {
-        console.log(
-            "Lỗi tải video:",
-            error
-        );
+        console.log("Lỗi nén video:", error);
 
-        res.status(500).send(
-            "Lỗi tải video"
-        );
+        if (req.file) {
+            deleteFile(req.file.path);
+        }
+
+        res.status(500).json({
+            error: "Lỗi nén video"
+        });
     }
 });
 
-/* DOWNLOAD MP3 */
+/* TẢI FILE KẾT QUẢ */
 
-app.get("/download-mp3", async (req, res) => {
-    try {
-        const url =
-            req.query.url;
+app.get("/download/:filename", (req, res) => {
+    const filename = req.params.filename;
 
-        if (!url) {
-            return res.status(400).send(
-                "Thiếu URL"
-            );
-        }
+    const filePath =
+        path.join(outputDir, filename);
 
-        const id =
-            Date.now();
-
-        const outputTemplate =
-            path.join(
-                downloadDir,
-                `audio-${id}.%(ext)s`
-            );
-
-        console.log("Đang tải MP3...");
-
-        await runYtDlp([
-            url,
-
-            "-x",
-
-            "--audio-format",
-            "mp3",
-
-            "--audio-quality",
-            "0",
-
-            "-o",
-            outputTemplate,
-
-            "--no-warnings",
-            "--no-check-certificates",
-            "--windows-filenames"
-        ]);
-
-        const files =
-            fs.readdirSync(downloadDir);
-
-        const audioFile =
-            files.find(file =>
-                file.startsWith(`audio-${id}`) &&
-                file.endsWith(".mp3")
-            );
-
-        if (!audioFile) {
-            return res.status(500).send(
-                "Không tạo được MP3"
-            );
-        }
-
-        const filePath =
-            path.join(downloadDir, audioFile);
-
-        console.log(
-            "Đã tạo MP3:",
-            filePath
-        );
-
-        res.download(
-            filePath,
-            "audio.mp3",
-            err => {
-                if (err) {
-                    console.log(
-                        "Lỗi gửi MP3:",
-                        err
-                    );
-                }
-            }
-        );
-
-    } catch (error) {
-        console.log(
-            "Lỗi tải MP3:",
-            error
-        );
-
-        res.status(500).send(
-            "Lỗi tải MP3"
-        );
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send("File không tồn tại");
     }
+
+    res.download(filePath, filename, err => {
+        if (err) {
+            console.log("Lỗi tải file:", err);
+        }
+
+        deleteFile(filePath);
+    });
 });
 
-/* START SERVER */
+const PORT = process.env.PORT || 3000;
 
-const PORT =
-    process.env.PORT || 3000;
-
-app.listen(
-    PORT,
-    "0.0.0.0",
-    () => {
-        console.log(
-            `Server chạy tại port ${PORT}`
-        );
-    }
-);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server chạy tại port ${PORT}`);
+});
