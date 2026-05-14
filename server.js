@@ -1,8 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const youtubedl = require("youtube-dl-exec").create({
-    youtubeDlPath: "yt-dlp"
-});
+const youtubedl = require("youtube-dl-exec");
 const path = require("path");
 const fs = require("fs");
 
@@ -58,11 +56,17 @@ app.post("/download", async (req, res) => {
         const info = await youtubedl(
             url,
             {
-                dumpSingleJson: true,
+                youtubeDlPath:
+                    "yt-dlp",
 
-                noWarnings: true,
+                dumpSingleJson:
+                    true,
 
-                noCheckCertificates: true
+                noWarnings:
+                    true,
+
+                noCheckCertificates:
+                    true
             }
         );
 
@@ -162,6 +166,9 @@ app.get("/download-video", async (req, res) => {
         await youtubedl(
             url,
             {
+                youtubeDlPath:
+                    "yt-dlp",
+
                 format:
 
 `bestvideo[height<=${height}][ext=mp4]+bestaudio[ext=m4a]/best[height<=${height}][ext=mp4]/best`,
@@ -279,6 +286,9 @@ app.get("/download-mp3", async (req, res) => {
         await youtubedl(
             url,
             {
+                youtubeDlPath:
+                    "yt-dlp",
+
                 extractAudio:
                     true,
 
