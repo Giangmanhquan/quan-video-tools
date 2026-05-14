@@ -299,7 +299,7 @@
 
                 const response =
                     await fetch(
-                        "http://localhost:3000/download",
+                        "/download",
                         {
                             method:"POST",
 
@@ -350,7 +350,7 @@
                                 class="download-btn"
 
 href=
-"http://localhost:3000/download-video?url=${encodeURIComponent(data.videoUrl)}&height=${format.height}"
+"/download-video?url=${encodeURIComponent(data.videoUrl)}&height=${format.height}"
 
                             >
                                 Download ${format.quality}
@@ -369,7 +369,7 @@ href=
                             class="download-btn mp3-btn"
 
 href=
-"http://localhost:3000/download-mp3?url=${encodeURIComponent(data.videoUrl)}"
+"/download-mp3?url=${encodeURIComponent(data.videoUrl)}"
 
                         >
                             Download MP3
