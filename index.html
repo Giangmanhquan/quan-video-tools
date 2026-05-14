@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Video Downloader</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+
+            font-family: Arial, sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e293b
+                );
+
+            min-height:100vh;
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            color:white;
+
+            padding:20px;
+        }
+
+        .container{
+
+            width:100%;
+            max-width:700px;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            backdrop-filter: blur(10px);
+
+            border:
+                1px solid rgba(255,255,255,0.1);
+
+            border-radius:25px;
+
+            padding:40px;
+
+            text-align:center;
+
+            box-shadow:
+                0 0 40px rgba(0,0,0,0.3);
+        }
+
+        h1{
+
+            font-size:42px;
+
+            margin-bottom:10px;
+        }
+
+        .sub{
+
+            color:#94a3b8;
+
+            margin-bottom:35px;
+        }
+
+        .input-box{
+
+            display:flex;
+
+            gap:10px;
+        }
+
+        input{
+
+            flex:1;
+
+            padding:18px;
+
+            border:none;
+
+            border-radius:15px;
+
+            background:#0f172a;
+
+            color:white;
+
+            font-size:16px;
+
+            outline:none;
+        }
+
+        button{
+
+            padding:18px 25px;
+
+            border:none;
+
+            border-radius:15px;
+
+            background:#2563eb;
+
+            color:white;
+
+            font-size:16px;
+
+            cursor:pointer;
+
+            transition:0.3s;
+        }
+
+        button:hover{
+
+            transform:scale(1.05);
+
+            background:#1d4ed8;
+        }
+
+        #result{
+
+            margin-top:35px;
+        }
+
+        .card{
+
+            background:
+                rgba(255,255,255,0.05);
+
+            border-radius:20px;
+
+            padding:20px;
+        }
+
+        .thumbnail{
+
+            width:100%;
+
+            border-radius:20px;
+
+            margin-bottom:20px;
+        }
+
+        .title{
+
+            font-size:22px;
+
+            margin-bottom:20px;
+
+            line-height:1.5;
+        }
+
+        .quality-title{
+
+            margin-bottom:15px;
+
+            color:#60a5fa;
+        }
+
+        .download-btn{
+
+            display:block;
+
+            width:100%;
+
+            margin-top:12px;
+
+            padding:15px;
+
+            background:#16a34a;
+
+            color:white;
+
+            text-decoration:none;
+
+            border-radius:15px;
+
+            transition:0.3s;
+
+            font-weight:bold;
+        }
+
+        .download-btn:hover{
+
+            transform:scale(1.03);
+
+            background:#15803d;
+        }
+
+        .mp3-btn{
+
+            background:#9333ea;
+        }
+
+        .mp3-btn:hover{
+
+            background:#7e22ce;
+        }
+
+        .loading{
+
+            margin-top:20px;
+
+            color:#60a5fa;
+
+            font-size:18px;
+        }
+
+        .error{
+
+            color:#f87171;
+
+            margin-top:20px;
+        }
+
+        @media(max-width:700px){
+
+            .input-box{
+
+                flex-direction:column;
+            }
+
+            button{
+
+                width:100%;
+            }
+
+            h1{
+
+                font-size:32px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Video Downloader</h1>
+
+        <p class="sub">
+            Tải video YouTube nhanh chóng
+        </p>
+
+        <div class="input-box">
+
+            <input
+                type="text"
+                id="url"
+                placeholder="Dán link YouTube..."
+            >
+
+            <button onclick="downloadVideo()">
+                Tải
+            </button>
+
+        </div>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        async function downloadVideo(){
+
+            const url =
+                document.getElementById("url").value;
+
+            const result =
+                document.getElementById("result");
+
+            result.innerHTML =
+
+                `<p class="loading">
+                    Đang xử lý video...
+                </p>`;
+
+            try{
+
+                const response =
+                    await fetch(
+                        "http://localhost:3000/download",
+                        {
+                            method:"POST",
+
+                            headers:{
+                                "Content-Type":
+                                "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                url
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if(data.error){
+
+                    result.innerHTML =
+                        `<p class="error">
+                            ${data.error}
+                        </p>`;
+
+                    return;
+                }
+
+                result.innerHTML = `
+
+                    <div class="card">
+
+                        <img
+                            class="thumbnail"
+                            src="${data.thumbnail}"
+                        >
+
+                        <div class="title">
+                            ${data.title}
+                        </div>
+
+                        <h3 class="quality-title">
+                            Tải Video MP4
+                        </h3>
+
+                        ${data.formats.map(format => `
+
+                            <a
+                                class="download-btn"
+
+href=
+"http://localhost:3000/download-video?url=${encodeURIComponent(data.videoUrl)}&height=${format.height}"
+
+                            >
+                                Download ${format.quality}
+                            </a>
+
+                        `).join("")}
+
+                        <h3
+                            class="quality-title"
+                            style="margin-top:25px;"
+                        >
+                            Tải Audio MP3
+                        </h3>
+
+                        <a
+                            class="download-btn mp3-btn"
+
+href=
+"http://localhost:3000/download-mp3?url=${encodeURIComponent(data.videoUrl)}"
+
+                        >
+                            Download MP3
+                        </a>
+
+                    </div>
+                `;
+
+            }catch(error){
+
+                result.innerHTML =
+
+                    `<p class="error">
+                        Có lỗi xảy ra
+                    </p>`;
+            }
+        }
+
+    </script>
+
+</body>
+</html>
