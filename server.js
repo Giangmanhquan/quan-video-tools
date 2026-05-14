@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const youtubedl = require("youtube-dl-exec");
 const path = require("path");
 const fs = require("fs");
+const { execFile } = require("child_process");
+const { promisify } = require("util");
+
+const execFileAsync = promisify(execFile);
 
 const app = express();
 
@@ -21,89 +24,78 @@ const downloadDir = path.join(
 );
 
 if (!fs.existsSync(downloadDir)) {
-
     fs.mkdirSync(downloadDir);
 }
+
+/* ĐƯỜNG DẪN YT-DLP */
+
+const YTDLP_PATH =
+    process.env.YTDLP_PATH || "yt-dlp";
 
 /* TEST SERVER */
 
 app.get("/", (req, res) => {
-
     res.sendFile(
         path.join(__dirname, "index.html")
     );
 });
 
+/* HÀM CHẠY YT-DLP */
+
+async function runYtDlp(args) {
+    return await execFileAsync(
+        YTDLP_PATH,
+        args,
+        {
+            maxBuffer:
+                1024 * 1024 * 200
+        }
+    );
+}
+
 /* LẤY THÔNG TIN VIDEO */
 
 app.post("/download", async (req, res) => {
-
     try {
-
         const { url } = req.body;
 
         if (!url) {
-
             return res.status(400).json({
                 error: "Thiếu URL"
             });
         }
 
-        console.log(
-            "Đang lấy thông tin video..."
-        );
+        console.log("Đang lấy thông tin video...");
 
-        const info = await youtubedl(
+        const { stdout } = await runYtDlp([
             url,
-            {
-                youtubeDlPath:
-                    "yt-dlp",
+            "--dump-single-json",
+            "--no-warnings",
+            "--no-check-certificates"
+        ]);
 
-                dumpSingleJson:
-                    true,
-
-                noWarnings:
-                    true,
-
-                noCheckCertificates:
-                    true
-            }
-        );
+        const info = JSON.parse(stdout);
 
         const qualities = [...new Set(
-
             info.formats
-
                 .filter(f =>
-
                     f.height &&
                     f.vcodec !== "none"
-
                 )
-
                 .map(f => f.height)
+        )].sort((a, b) => a - b);
 
-        )]
+        const formats = qualities.map(height => ({
+            quality:
+                height + "p",
 
-        .sort((a, b) => a - b);
+            height:
+                height
+        }));
 
-        const formats = qualities.map(
-            height => ({
-
-                quality:
-                    height + "p",
-
-                height:
-                    height
-            })
-        );
-
-        console.log(
-            "Lấy thông tin thành công"
-        );
+        console.log("Lấy thông tin thành công");
 
         res.json({
-
             title:
                 info.title,
 
@@ -117,14 +109,12 @@ app.post("/download", async (req, res) => {
         });
 
     } catch (error) {
-
         console.log(
             "Lỗi lấy thông tin:",
             error
         );
 
         res.status(500).json({
-
             error:
                 "Không lấy được video"
         });
@@ -134,9 +124,7 @@ app.post("/download", async (req, res) => {
 /* DOWNLOAD VIDEO */
 
 app.get("/download-video", async (req, res) => {
-
     try {
-
         const url =
             req.query.url;
 
@@ -144,7 +132,6 @@ app.get("/download-video", async (req, res) => {
             req.query.height || 720;
 
         if (!url) {
-
             return res.status(400).send(
                 "Thiếu URL"
             );
@@ -159,67 +146,44 @@ app.get("/download-video", async (req, res) => {
                 `video-${id}.%(ext)s`
             );
 
-        console.log(
-            "Đang tải video..."
-        );
+        console.log("Đang tải video...");
 
-        await youtubedl(
+        await runYtDlp([
             url,
-            {
-                youtubeDlPath:
-                    "yt-dlp",
 
-                format:
+            "-f",
+            `bestvideo[height<=${height}][ext=mp4]+bestaudio[ext=m4a]/best[height<=${height}][ext=mp4]/best`,
 
-`bestvideo[height<=${height}][ext=mp4]+bestaudio[ext=m4a]/best[height<=${height}][ext=mp4]/best`,
+            "--merge-output-format",
+            "mp4",
 
-                mergeOutputFormat:
-                    "mp4",
+            "-o",
+            outputTemplate,
 
-                output:
-                    outputTemplate,
-
-                noWarnings:
-                    true,
-
-                noCheckCertificates:
-                    true,
-
-                windowsFilenames:
-                    true
-            }
-        );
+            "--no-warnings",
+            "--no-check-certificates",
+            "--windows-filenames"
+        ]);
 
         const files =
             fs.readdirSync(downloadDir);
 
         const videoFile =
             files.find(file =>
-
-                file.startsWith(
-                    `video-${id}`
-                ) &&
-
+                file.startsWith(`video-${id}`) &&
                 file.endsWith(".mp4")
             );
 
         if (!videoFile) {
-
-            console.log(
-                "Không tìm thấy file MP4"
-            );
+            console.log("Không tìm thấy file MP4");
 
             return res.status(500).send(
-
-                "Không tạo được video.\nKiểm tra FFmpeg."
+                "Không tạo được video. Kiểm tra FFmpeg hoặc yt-dlp."
             );
         }
 
         const filePath =
-            path.join(
-                downloadDir,
-                videoFile
-            );
+            path.join(downloadDir, videoFile);
 
         console.log(
             "Đã tạo xong:",
@@ -230,9 +194,7 @@ app.get("/download-video", async (req, res) => {
             filePath,
             "video.mp4",
             err => {
-
                 if (err) {
-
                     console.log(
                         "Lỗi gửi file:",
                         err
@@ -242,7 +204,6 @@ app.get("/download-video", async (req, res) => {
         );
 
     } catch (error) {
-
         console.log(
             "Lỗi tải video:",
             error
@@ -257,14 +218,11 @@ app.get("/download-video", async (req, res) => {
 /* DOWNLOAD MP3 */
 
 app.get("/download-mp3", async (req, res) => {
-
     try {
-
         const url =
             req.query.url;
 
         if (!url) {
-
             return res.status(400).send(
                 "Thiếu URL"
             );
@@ -279,65 +237,44 @@ app.get("/download-mp3", async (req, res) => {
                 `audio-${id}.%(ext)s`
             );
 
-        console.log(
-            "Đang tải MP3..."
-        );
+        console.log("Đang tải MP3...");
 
-        await youtubedl(
+        await runYtDlp([
             url,
-            {
-                youtubeDlPath:
-                    "yt-dlp",
 
-                extractAudio:
-                    true,
+            "-x",
 
-                audioFormat:
-                    "mp3",
+            "--audio-format",
+            "mp3",
 
-                audioQuality:
-                    0,
+            "--audio-quality",
+            "0",
 
-                output:
-                    outputTemplate,
+            "-o",
+            outputTemplate,
 
-                noWarnings:
-                    true,
-
-                noCheckCertificates:
-                    true,
-
-                windowsFilenames:
-                    true
-            }
-        );
+            "--no-warnings",
+            "--no-check-certificates",
+            "--windows-filenames"
+        ]);
 
         const files =
             fs.readdirSync(downloadDir);
 
         const audioFile =
             files.find(file =>
-
-                file.startsWith(
-                    `audio-${id}`
-                ) &&
-
+                file.startsWith(`audio-${id}`) &&
                 file.endsWith(".mp3")
             );
 
         if (!audioFile) {
-
             return res.status(500).send(
-
                 "Không tạo được MP3"
             );
         }
 
         const filePath =
-            path.join(
-                downloadDir,
-                audioFile
-            );
+            path.join(downloadDir, audioFile);
 
         console.log(
             "Đã tạo MP3:",
@@ -348,9 +285,7 @@ app.get("/download-mp3", async (req, res) => {
             filePath,
             "audio.mp3",
             err => {
-
                 if (err) {
-
                     console.log(
                         "Lỗi gửi MP3:",
                         err
@@ -360,7 +295,6 @@ app.get("/download-mp3", async (req, res) => {
         );
 
     } catch (error) {
-
         console.log(
             "Lỗi tải MP3:",
             error
@@ -381,7 +315,6 @@ app.listen(
     PORT,
     "0.0.0.0",
     () => {
-
         console.log(
             `Server chạy tại port ${PORT}`
         );
