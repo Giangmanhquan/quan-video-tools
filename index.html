@@ -37,7 +37,7 @@
 
         .container{
             width:100%;
-            max-width:760px;
+            max-width:920px;
             background:rgba(255,255,255,0.06);
             border:1px solid rgba(255,255,255,0.12);
             border-radius:28px;
@@ -61,49 +61,66 @@
         .upload-box{
             border:2px dashed rgba(255,255,255,0.25);
             border-radius:22px;
-            padding:35px 20px;
+            padding:30px 20px;
             margin-bottom:25px;
             background:rgba(15,23,42,0.75);
         }
 
-        input[type="file"]{
+        label{
+            display:block;
+            text-align:left;
+            margin-top:14px;
+            margin-bottom:7px;
+            color:#cbd5e1;
+            font-size:14px;
+        }
+
+        input,
+        select{
             width:100%;
-            padding:16px;
+            padding:14px;
             background:#020617;
             color:white;
             border-radius:14px;
             border:1px solid rgba(255,255,255,0.15);
+            outline:none;
         }
 
-        .tool-buttons{
+        .grid{
             display:grid;
             grid-template-columns:1fr 1fr;
-            gap:15px;
+            gap:14px;
+        }
+
+        .tool-list{
+            display:grid;
+            grid-template-columns:1fr 1fr 1fr;
+            gap:12px;
             margin-top:20px;
         }
 
         button{
-            padding:17px;
+            padding:15px;
             border:none;
-            border-radius:16px;
+            border-radius:15px;
             color:white;
-            font-size:16px;
+            font-size:15px;
             font-weight:bold;
             cursor:pointer;
             transition:0.25s;
+            background:#2563eb;
         }
 
         button:hover{
             transform:scale(1.03);
+            background:#1d4ed8;
         }
 
-        .mp3-btn{
-            background:#9333ea;
-        }
-
-        .compress-btn{
-            background:#16a34a;
-        }
+        .purple{ background:#9333ea; }
+        .green{ background:#16a34a; }
+        .cyan{ background:#0ea5e9; }
+        .orange{ background:#f97316; }
+        .pink{ background:#db2777; }
 
         .result{
             margin-top:28px;
@@ -151,6 +168,20 @@
             line-height:1.6;
         }
 
+        .hidden{
+            display:none;
+        }
+
+        @media(max-width:850px){
+            .tool-list{
+                grid-template-columns:1fr;
+            }
+
+            .grid{
+                grid-template-columns:1fr;
+            }
+        }
+
         @media(max-width:700px){
             .container{
                 padding:28px 20px;
@@ -158,10 +189,6 @@
 
             h1{
                 font-size:32px;
-            }
-
-            .tool-buttons{
-                grid-template-columns:1fr;
             }
         }
     </style>
@@ -174,31 +201,204 @@
         <h1>Quan Video Tools</h1>
 
         <p class="sub">
-            Upload video để chuyển sang MP3 hoặc nén video online.
+            Bộ công cụ xử lý video online: chuyển MP3, nén, cắt, resize, thumbnail, watermark, ghép nhạc và nhiều tính năng khác.
         </p>
 
         <div class="upload-box">
 
+            <label>Upload video</label>
             <input
                 type="file"
                 id="videoFile"
                 accept="video/*"
             >
 
-            <div class="tool-buttons">
-
-                <button
-                    class="mp3-btn"
-                    onclick="processVideo('mp3')"
+            <div id="audioBox" class="hidden">
+                <label>Upload file nhạc / audio</label>
+                <input
+                    type="file"
+                    id="audioFile"
+                    accept="audio/*"
                 >
-                    Chuyển sang MP3
+            </div>
+
+            <div id="imageBox" class="hidden">
+                <label>Upload ảnh</label>
+                <input
+                    type="file"
+                    id="imageFile"
+                    accept="image/*"
+                >
+            </div>
+
+            <div class="grid">
+
+                <div id="timeBox" class="hidden">
+                    <label>Thời gian bắt đầu</label>
+                    <input
+                        type="text"
+                        id="startTime"
+                        value="00:00:00"
+                    >
+
+                    <label>Thời gian kết thúc</label>
+                    <input
+                        type="text"
+                        id="endTime"
+                        value="00:00:10"
+                    >
+                </div>
+
+                <div id="resizeBox" class="hidden">
+                    <label>Tỉ lệ video</label>
+                    <select id="ratio">
+                        <option value="9:16">9:16 - TikTok/Reels</option>
+                        <option value="16:9">16:9 - YouTube ngang</option>
+                        <option value="1:1">1:1 - Vuông</option>
+                        <option value="4:5">4:5 - Instagram</option>
+                    </select>
+                </div>
+
+                <div id="thumbnailBox" class="hidden">
+                    <label>Lấy thumbnail tại thời điểm</label>
+                    <input
+                        type="text"
+                        id="thumbnailTime"
+                        value="00:00:03"
+                    >
+                </div>
+
+                <div id="volumeBox" class="hidden">
+                    <label>Âm lượng</label>
+                    <select id="volume">
+                        <option value="0.5">Giảm 50%</option>
+                        <option value="1.5">Tăng 150%</option>
+                        <option value="2">Tăng 200%</option>
+                    </select>
+                </div>
+
+                <div id="speedBox" class="hidden">
+                    <label>Tốc độ</label>
+                    <select id="speed">
+                        <option value="0.5">0.5x</option>
+                        <option value="0.75">0.75x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2">2x</option>
+                    </select>
+                </div>
+
+                <div id="rotateBox" class="hidden">
+                    <label>Xoay / lật</label>
+                    <select id="rotateMode">
+                        <option value="right">Xoay phải 90°</option>
+                        <option value="left">Xoay trái 90°</option>
+                        <option value="hflip">Lật ngang</option>
+                        <option value="vflip">Lật dọc</option>
+                    </select>
+                </div>
+
+                <div id="watermarkBox" class="hidden">
+                    <label>Chữ watermark</label>
+                    <input
+                        type="text"
+                        id="watermarkText"
+                        value="@QuanEdit"
+                    >
+
+                    <label>Vị trí</label>
+                    <select id="watermarkPosition">
+                        <option value="bottom-right">Góc phải dưới</option>
+                        <option value="bottom-left">Góc trái dưới</option>
+                        <option value="top-right">Góc phải trên</option>
+                        <option value="top-left">Góc trái trên</option>
+                        <option value="center">Giữa màn hình</option>
+                    </select>
+                </div>
+
+                <div id="convertBox" class="hidden">
+                    <label>Định dạng xuất</label>
+                    <select id="format">
+                        <option value="mp4">MP4</option>
+                        <option value="webm">WebM</option>
+                        <option value="mov">MOV</option>
+                        <option value="mkv">MKV</option>
+                    </select>
+                </div>
+
+                <div id="loopBox" class="hidden">
+                    <label>Số lần lặp</label>
+                    <input
+                        type="number"
+                        id="loopCount"
+                        value="3"
+                        min="2"
+                        max="20"
+                    >
+                </div>
+
+            </div>
+
+            <div class="tool-list">
+
+                <button class="purple" onclick="processTool('mp3')">
+                    Chuyển MP3
                 </button>
 
-                <button
-                    class="compress-btn"
-                    onclick="processVideo('compress')"
-                >
-                    Nén Video
+                <button class="cyan" onclick="processTool('extract')">
+                    Tách âm thanh
+                </button>
+
+                <button class="green" onclick="processTool('compress')">
+                    Nén video
+                </button>
+
+                <button onclick="processTool('cut')">
+                    Cắt video
+                </button>
+
+                <button onclick="processTool('resize')">
+                    Resize video
+                </button>
+
+                <button onclick="processTool('thumbnail')">
+                    Tạo thumbnail
+                </button>
+
+                <button onclick="processTool('mute')">
+                    Tắt âm thanh
+                </button>
+
+                <button onclick="processTool('volume')">
+                    Tăng/giảm âm lượng
+                </button>
+
+                <button class="orange" onclick="processTool('replaceAudio')">
+                    Ghép nhạc
+                </button>
+
+                <button onclick="processTool('speed')">
+                    Tốc độ video
+                </button>
+
+                <button onclick="processTool('rotate')">
+                    Xoay / lật
+                </button>
+
+                <button class="pink" onclick="processTool('watermark')">
+                    Watermark chữ
+                </button>
+
+                <button onclick="processTool('convert')">
+                    Đổi định dạng
+                </button>
+
+                <button onclick="processTool('loop')">
+                    Loop video
+                </button>
+
+                <button class="orange" onclick="processTool('imageAudio')">
+                    Ảnh + nhạc → video
                 </button>
 
             </div>
@@ -211,65 +411,242 @@
         ></div>
 
         <p class="note">
-            Lưu ý: Video càng dài thì xử lý càng lâu. File sau khi tải sẽ được server tự xóa.
+            Lưu ý: Hỗ trợ file tối đa 500MB. Video càng dài thì xử lý càng lâu.
         </p>
 
     </div>
 
     <script>
-        async function processVideo(type){
+        const optionBoxes = [
+            "audioBox",
+            "imageBox",
+            "timeBox",
+            "resizeBox",
+            "thumbnailBox",
+            "volumeBox",
+            "speedBox",
+            "rotateBox",
+            "watermarkBox",
+            "convertBox",
+            "loopBox"
+        ];
 
-            const fileInput =
-                document.getElementById("videoFile");
+        function hideAllBoxes(){
+            optionBoxes.forEach(id => {
+                document.getElementById(id).classList.add("hidden");
+            });
+        }
+
+        function showBoxes(type){
+            hideAllBoxes();
+
+            if(type === "cut"){
+                document.getElementById("timeBox").classList.remove("hidden");
+            }
+
+            if(type === "resize"){
+                document.getElementById("resizeBox").classList.remove("hidden");
+            }
+
+            if(type === "thumbnail"){
+                document.getElementById("thumbnailBox").classList.remove("hidden");
+            }
+
+            if(type === "volume"){
+                document.getElementById("volumeBox").classList.remove("hidden");
+            }
+
+            if(type === "replaceAudio"){
+                document.getElementById("audioBox").classList.remove("hidden");
+            }
+
+            if(type === "speed"){
+                document.getElementById("speedBox").classList.remove("hidden");
+            }
+
+            if(type === "rotate"){
+                document.getElementById("rotateBox").classList.remove("hidden");
+            }
+
+            if(type === "watermark"){
+                document.getElementById("watermarkBox").classList.remove("hidden");
+            }
+
+            if(type === "convert"){
+                document.getElementById("convertBox").classList.remove("hidden");
+            }
+
+            if(type === "loop"){
+                document.getElementById("loopBox").classList.remove("hidden");
+            }
+
+            if(type === "imageAudio"){
+                document.getElementById("imageBox").classList.remove("hidden");
+                document.getElementById("audioBox").classList.remove("hidden");
+            }
+        }
+
+        function getRoute(type){
+            const routes = {
+                mp3: "/convert-mp3",
+                extract: "/extract-audio",
+                compress: "/compress-video",
+                cut: "/cut-video",
+                resize: "/resize-video",
+                thumbnail: "/thumbnail-video",
+                mute: "/mute-video",
+                volume: "/volume-video",
+                replaceAudio: "/replace-audio",
+                speed: "/speed-video",
+                rotate: "/rotate-video",
+                watermark: "/watermark-video",
+                convert: "/convert-video",
+                loop: "/loop-video",
+                imageAudio: "/image-audio-video"
+            };
+
+            return routes[type];
+        }
+
+        function getLoading(type){
+            const texts = {
+                mp3: "Đang chuyển video sang MP3...",
+                extract: "Đang tách âm thanh...",
+                compress: "Đang nén video...",
+                cut: "Đang cắt video...",
+                resize: "Đang resize video...",
+                thumbnail: "Đang tạo thumbnail...",
+                mute: "Đang tắt âm thanh...",
+                volume: "Đang chỉnh âm lượng...",
+                replaceAudio: "Đang ghép nhạc vào video...",
+                speed: "Đang đổi tốc độ video...",
+                rotate: "Đang xoay / lật video...",
+                watermark: "Đang thêm watermark...",
+                convert: "Đang đổi định dạng video...",
+                loop: "Đang tạo video loop...",
+                imageAudio: "Đang tạo video từ ảnh + nhạc..."
+            };
+
+            return texts[type];
+        }
+
+        async function processTool(type){
+            showBoxes(type);
 
             const result =
                 document.getElementById("result");
 
-            const file =
-                fileInput.files[0];
+            const videoFile =
+                document.getElementById("videoFile").files[0];
 
-            if(!file){
-                result.innerHTML =
-                    `<p class="error">
-                        Vui lòng chọn video trước.
-                    </p>`;
+            const audioFile =
+                document.getElementById("audioFile").files[0];
 
-                return;
-            }
+            const imageFile =
+                document.getElementById("imageFile").files[0];
 
             const formData =
                 new FormData();
 
+            if(type === "imageAudio"){
+                if(!imageFile || !audioFile){
+                    result.innerHTML =
+                        `<p class="error">
+                            Vui lòng chọn cả ảnh và file nhạc.
+                        </p>`;
+                    return;
+                }
+
+                formData.append("image", imageFile);
+                formData.append("audio", audioFile);
+            }else{
+                if(!videoFile){
+                    result.innerHTML =
+                        `<p class="error">
+                            Vui lòng chọn video trước.
+                        </p>`;
+                    return;
+                }
+
+                formData.append("video", videoFile);
+            }
+
+            if(type === "replaceAudio"){
+                if(!audioFile){
+                    result.innerHTML =
+                        `<p class="error">
+                            Vui lòng chọn thêm file nhạc.
+                        </p>`;
+                    return;
+                }
+
+                formData.append("audio", audioFile);
+            }
+
             formData.append(
-                "video",
-                file
+                "start",
+                document.getElementById("startTime").value
             );
 
-            let apiUrl = "";
+            formData.append(
+                "end",
+                document.getElementById("endTime").value
+            );
 
-            let loadingText = "";
+            formData.append(
+                "ratio",
+                document.getElementById("ratio").value
+            );
 
-            if(type === "mp3"){
-                apiUrl = "/convert-mp3";
-                loadingText =
-                    "Đang chuyển video sang MP3...";
-            }
+            formData.append(
+                "time",
+                document.getElementById("thumbnailTime").value
+            );
 
-            if(type === "compress"){
-                apiUrl = "/compress-video";
-                loadingText =
-                    "Đang nén video...";
-            }
+            formData.append(
+                "volume",
+                document.getElementById("volume").value
+            );
+
+            formData.append(
+                "speed",
+                document.getElementById("speed").value
+            );
+
+            formData.append(
+                "mode",
+                document.getElementById("rotateMode").value
+            );
+
+            formData.append(
+                "text",
+                document.getElementById("watermarkText").value
+            );
+
+            formData.append(
+                "position",
+                document.getElementById("watermarkPosition").value
+            );
+
+            formData.append(
+                "format",
+                document.getElementById("format").value
+            );
+
+            formData.append(
+                "count",
+                document.getElementById("loopCount").value
+            );
 
             result.innerHTML =
                 `<p class="loading">
-                    ${loadingText}
+                    ${getLoading(type)}
                 </p>`;
 
             try{
                 const response =
                     await fetch(
-                        apiUrl,
+                        getRoute(type),
                         {
                             method:"POST",
                             body: formData
@@ -284,7 +661,6 @@
                         `<p class="error">
                             ${data.error}
                         </p>`;
-
                     return;
                 }
 
@@ -308,7 +684,7 @@
             }catch(error){
                 result.innerHTML =
                     `<p class="error">
-                        Có lỗi xảy ra khi xử lý video.
+                        Có lỗi xảy ra khi xử lý file.
                     </p>`;
             }
         }
