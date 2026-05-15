@@ -196,7 +196,8 @@ Yêu cầu:
         });
 
     } catch (error) {
-        console.log("Lỗi AI:", error);
+        console.log("Lỗi AI:", error.message);
+console.log(error);
 
         res.status(500).json({
             error: "Lỗi tạo nội dung AI"
