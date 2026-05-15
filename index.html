@@ -18,109 +18,440 @@
             box-sizing:border-box;
         }
 
+        :root{
+            --bg-main:#020617;
+            --bg-card:rgba(15,23,42,0.78);
+            --border:rgba(255,255,255,0.12);
+            --text-main:#ffffff;
+            --text-soft:#94a3b8;
+            --blue:#2563eb;
+            --blue-light:#60a5fa;
+            --green:#22c55e;
+            --purple:#9333ea;
+            --cyan:#0ea5e9;
+            --orange:#f97316;
+            --pink:#db2777;
+            --slate:#334155;
+        }
+
         body{
-            font-family: Arial, sans-serif;
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+
             background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(37,99,235,0.25),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at top right,
+                    rgba(147,51,234,0.18),
+                    transparent 30%
+                ),
                 linear-gradient(
                     135deg,
                     #020617,
                     #0f172a,
-                    #1e293b
+                    #111827
                 );
+
             min-height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            color:white;
-            padding:20px;
+            color:var(--text-main);
+            padding:24px;
         }
 
-        .container{
+        .page{
             width:100%;
-            max-width:920px;
+            max-width:1180px;
+            margin:0 auto;
+        }
+
+        .navbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:35px;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            font-weight:800;
+            font-size:20px;
+        }
+
+        .logo-icon{
+            width:42px;
+            height:42px;
+            border-radius:14px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #9333ea
+                );
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:
+                0 0 25px rgba(37,99,235,0.45);
+        }
+
+        .nav-badge{
+            padding:9px 14px;
+            border-radius:999px;
             background:rgba(255,255,255,0.06);
-            border:1px solid rgba(255,255,255,0.12);
-            border-radius:28px;
-            padding:40px;
+            border:1px solid var(--border);
+            color:#cbd5e1;
+            font-size:13px;
+        }
+
+        .hero{
             text-align:center;
-            box-shadow:0 0 45px rgba(0,0,0,0.35);
-            backdrop-filter:blur(12px);
+            margin-bottom:34px;
+        }
+
+        .hero-badge{
+            display:inline-block;
+            padding:9px 15px;
+            border-radius:999px;
+            background:rgba(37,99,235,0.15);
+            border:1px solid rgba(96,165,250,0.25);
+            color:#93c5fd;
+            font-size:14px;
+            margin-bottom:18px;
         }
 
         h1{
-            font-size:42px;
-            margin-bottom:10px;
+            font-size:58px;
+            line-height:1.05;
+            margin-bottom:18px;
+            letter-spacing:-1.5px;
+        }
+
+        .gradient-text{
+            background:
+                linear-gradient(
+                    90deg,
+                    #60a5fa,
+                    #a78bfa,
+                    #f472b6
+                );
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
         }
 
         .sub{
-            color:#94a3b8;
-            margin-bottom:30px;
-            line-height:1.6;
+            max-width:760px;
+            margin:0 auto;
+            color:var(--text-soft);
+            font-size:17px;
+            line-height:1.7;
         }
 
-        .upload-box{
-            border:2px dashed rgba(255,255,255,0.25);
-            border-radius:22px;
-            padding:30px 20px;
-            margin-bottom:25px;
-            background:rgba(15,23,42,0.75);
+        .main-card{
+            background:rgba(255,255,255,0.06);
+            border:1px solid var(--border);
+            border-radius:32px;
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.38),
+                inset 0 1px 0 rgba(255,255,255,0.08);
+            backdrop-filter:blur(16px);
+            overflow:hidden;
+        }
+
+        .card-header{
+            padding:28px 32px;
+            border-bottom:1px solid var(--border);
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(37,99,235,0.18),
+                    rgba(147,51,234,0.12),
+                    transparent
+                );
+            display:flex;
+            justify-content:space-between;
+            gap:18px;
+            align-items:center;
+        }
+
+        .card-title{
+            text-align:left;
+        }
+
+        .card-title h2{
+            font-size:24px;
+            margin-bottom:6px;
+        }
+
+        .card-title p{
+            color:var(--text-soft);
+            font-size:14px;
+            line-height:1.5;
+        }
+
+        .status-pill{
+            padding:10px 14px;
+            border-radius:999px;
+            background:rgba(34,197,94,0.12);
+            border:1px solid rgba(34,197,94,0.25);
+            color:#86efac;
+            font-size:13px;
+            white-space:nowrap;
+        }
+
+        .content{
+            padding:32px;
+        }
+
+        .upload-zone{
+            border:2px dashed rgba(148,163,184,0.35);
+            border-radius:24px;
+            padding:28px;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(15,23,42,0.9),
+                    rgba(15,23,42,0.65)
+                );
+            margin-bottom:28px;
+        }
+
+        .upload-title{
+            text-align:left;
+            margin-bottom:18px;
+        }
+
+        .upload-title h3{
+            font-size:20px;
+            margin-bottom:6px;
+        }
+
+        .upload-title p{
+            color:var(--text-soft);
+            font-size:14px;
+        }
+
+        .file-grid{
+            display:grid;
+            grid-template-columns:1fr;
+            gap:16px;
+        }
+
+        .file-field{
+            background:rgba(2,6,23,0.72);
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:18px;
+            padding:16px;
         }
 
         label{
             display:block;
             text-align:left;
-            margin-top:14px;
-            margin-bottom:7px;
+            margin-bottom:9px;
             color:#cbd5e1;
             font-size:14px;
+            font-weight:600;
         }
 
         input,
         select{
             width:100%;
-            padding:14px;
+            padding:14px 15px;
             background:#020617;
             color:white;
             border-radius:14px;
             border:1px solid rgba(255,255,255,0.15);
             outline:none;
+            font-size:14px;
+        }
+
+        input:focus,
+        select:focus{
+            border-color:#60a5fa;
+            box-shadow:0 0 0 3px rgba(96,165,250,0.15);
+        }
+
+        input[type="file"]{
+            cursor:pointer;
+        }
+
+        .section-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:end;
+            gap:18px;
+            margin-bottom:16px;
+        }
+
+        .section-title{
+            text-align:left;
+        }
+
+        .section-title h3{
+            font-size:22px;
+            margin-bottom:6px;
+        }
+
+        .section-title p{
+            color:var(--text-soft);
+            font-size:14px;
+        }
+
+        .tool-list{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:14px;
+            margin-bottom:24px;
+        }
+
+        .tool-btn{
+            min-height:86px;
+            padding:16px;
+            border-radius:20px;
+            background:rgba(51,65,85,0.72);
+            border:1px solid rgba(255,255,255,0.12);
+            color:white;
+            font-weight:800;
+            cursor:pointer;
+            transition:0.22s ease;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:flex-start;
+            gap:6px;
+            text-align:left;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .tool-btn::after{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,0.12),
+                    transparent
+                );
+            opacity:0;
+            transition:0.22s;
+        }
+
+        .tool-btn:hover{
+            transform:translateY(-3px);
+            border-color:rgba(96,165,250,0.45);
+            box-shadow:0 14px 35px rgba(0,0,0,0.25);
+        }
+
+        .tool-btn:hover::after{
+            opacity:1;
+        }
+
+        .tool-btn.active{
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(37,99,235,0.92),
+                    rgba(147,51,234,0.75)
+                );
+            border-color:rgba(147,197,253,0.7);
+            box-shadow:
+                0 0 0 2px rgba(147,197,253,0.35),
+                0 18px 45px rgba(37,99,235,0.32);
+            transform:translateY(-3px);
+        }
+
+        .tool-name{
+            font-size:15px;
+            line-height:1.25;
+            z-index:1;
+        }
+
+        .tool-desc{
+            color:rgba(226,232,240,0.82);
+            font-size:12px;
+            line-height:1.35;
+            font-weight:500;
+            z-index:1;
+        }
+
+        .purple{
+            background:linear-gradient(135deg, rgba(147,51,234,0.75), rgba(51,65,85,0.55));
+        }
+
+        .green{
+            background:linear-gradient(135deg, rgba(22,163,74,0.75), rgba(51,65,85,0.55));
+        }
+
+        .cyan{
+            background:linear-gradient(135deg, rgba(14,165,233,0.75), rgba(51,65,85,0.55));
+        }
+
+        .orange{
+            background:linear-gradient(135deg, rgba(249,115,22,0.75), rgba(51,65,85,0.55));
+        }
+
+        .pink{
+            background:linear-gradient(135deg, rgba(219,39,119,0.75), rgba(51,65,85,0.55));
+        }
+
+        .selected-tool{
+            padding:17px;
+            border-radius:18px;
+            background:rgba(37,99,235,0.12);
+            color:#bfdbfe;
+            border:1px solid rgba(147,197,253,0.25);
+            font-weight:700;
+            margin-bottom:22px;
+            text-align:left;
+        }
+
+        .settings-panel{
+            background:rgba(2,6,23,0.42);
+            border:1px solid rgba(255,255,255,0.08);
+            border-radius:22px;
+            padding:20px;
+            margin-bottom:22px;
         }
 
         .grid{
             display:grid;
             grid-template-columns:1fr 1fr;
-            gap:14px;
+            gap:16px;
         }
 
-        .tool-list{
-            display:grid;
-            grid-template-columns:1fr 1fr 1fr;
-            gap:12px;
-            margin-top:20px;
-        }
-
-        button{
-            padding:15px;
+        .run-btn{
+            width:100%;
+            padding:19px;
             border:none;
-            border-radius:15px;
+            border-radius:18px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #22c55e,
+                    #16a34a
+                );
             color:white;
-            font-size:15px;
-            font-weight:bold;
+            font-size:17px;
+            font-weight:900;
             cursor:pointer;
-            transition:0.25s;
-            background:#2563eb;
+            transition:0.22s;
+            box-shadow:
+                0 18px 40px rgba(34,197,94,0.25);
         }
 
-        button:hover{
-            transform:scale(1.03);
-            background:#1d4ed8;
+        .run-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:
+                0 24px 50px rgba(34,197,94,0.32);
         }
-
-        .purple{ background:#9333ea; }
-        .green{ background:#16a34a; }
-        .cyan{ background:#0ea5e9; }
-        .orange{ background:#f97316; }
-        .pink{ background:#db2777; }
 
         .result{
             margin-top:28px;
@@ -129,18 +460,36 @@
         .loading{
             color:#60a5fa;
             font-size:18px;
+            padding:18px;
+            border-radius:18px;
+            background:rgba(37,99,235,0.1);
+            border:1px solid rgba(96,165,250,0.18);
         }
 
         .error{
-            color:#f87171;
-            font-size:17px;
+            color:#fecaca;
+            background:rgba(239,68,68,0.12);
+            border:1px solid rgba(248,113,113,0.22);
+            border-radius:18px;
+            padding:18px;
+            font-size:16px;
         }
 
         .success-card{
-            background:rgba(255,255,255,0.07);
-            border-radius:20px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(34,197,94,0.14),
+                    rgba(37,99,235,0.10)
+                );
+            border:1px solid rgba(34,197,94,0.22);
+            border-radius:22px;
             padding:25px;
             margin-top:25px;
+        }
+
+        .success-card h3{
+            margin-bottom:10px;
         }
 
         .download-btn{
@@ -148,47 +497,164 @@
             width:100%;
             margin-top:18px;
             padding:16px;
-            background:#2563eb;
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
             color:white;
             text-decoration:none;
             border-radius:15px;
-            font-weight:bold;
+            font-weight:900;
             transition:0.25s;
         }
 
         .download-btn:hover{
-            background:#1d4ed8;
-            transform:scale(1.02);
+            transform:translateY(-2px);
+            box-shadow:0 16px 35px rgba(37,99,235,0.3);
         }
 
         .note{
-            margin-top:25px;
+            margin-top:26px;
             color:#94a3b8;
             font-size:14px;
-            line-height:1.6;
+            line-height:1.7;
+            text-align:center;
+        }
+
+        .features{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:14px;
+            margin-top:24px;
+        }
+
+        .feature-mini{
+            padding:16px;
+            border-radius:18px;
+            background:rgba(255,255,255,0.045);
+            border:1px solid rgba(255,255,255,0.08);
+            text-align:left;
+        }
+
+        .feature-mini strong{
+            display:block;
+            margin-bottom:6px;
+            font-size:14px;
+        }
+
+        .feature-mini span{
+            color:var(--text-soft);
+            font-size:13px;
+            line-height:1.5;
         }
 
         .hidden{
             display:none;
         }
 
-        @media(max-width:850px){
+        @media(max-width:950px){
+            h1{
+                font-size:46px;
+            }
+
             .tool-list{
+                grid-template-columns:repeat(2, 1fr);
+            }
+
+            .features{
                 grid-template-columns:1fr;
+            }
+        }
+
+        @media(max-width:720px){
+            body{
+                padding:14px;
+            }
+
+            .navbar{
+                margin-bottom:26px;
+            }
+
+            .nav-badge{
+                display:none;
+            }
+
+            h1{
+                font-size:36px;
+            }
+
+            .sub{
+                font-size:15px;
+            }
+
+            .main-card{
+                border-radius:24px;
+            }
+
+            .card-header{
+                padding:22px;
+                flex-direction:column;
+                align-items:flex-start;
+            }
+
+            .content{
+                padding:20px;
+            }
+
+            .upload-zone{
+                padding:20px 14px;
+            }
+
+            .tool-list{
+                grid-template-columns:repeat(2, 1fr);
+                gap:10px;
+            }
+
+            .tool-btn{
+                min-height:76px;
+                padding:13px;
+                border-radius:17px;
+            }
+
+            .tool-name{
+                font-size:13.5px;
+            }
+
+            .tool-desc{
+                font-size:11.5px;
             }
 
             .grid{
                 grid-template-columns:1fr;
             }
-        }
 
-        @media(max-width:700px){
-            .container{
-                padding:28px 20px;
+            .run-btn{
+                position:sticky;
+                bottom:12px;
+                z-index:20;
+                box-shadow:
+                    0 18px 45px rgba(0,0,0,0.5);
             }
 
+            .section-row{
+                flex-direction:column;
+                align-items:flex-start;
+            }
+        }
+
+        @media(max-width:390px){
             h1{
-                font-size:32px;
+                font-size:31px;
+            }
+
+            .tool-list{
+                grid-template-columns:1fr;
+            }
+
+            .tool-btn{
+                min-height:64px;
             }
         }
     </style>
@@ -196,227 +662,593 @@
 
 <body>
 
-    <div class="container">
+    <div class="page">
 
-        <h1>Quan Video Tools</h1>
+        <div class="navbar">
 
-        <p class="sub">
-            Bộ công cụ xử lý video online: chuyển MP3, nén, cắt, resize, thumbnail, watermark, ghép nhạc và nhiều tính năng khác.
-        </p>
+            <div class="logo">
 
-        <div class="upload-box">
-
-            <label>Upload video</label>
-            <input
-                type="file"
-                id="videoFile"
-                accept="video/*"
-            >
-
-            <div id="audioBox" class="hidden">
-                <label>Upload file nhạc / audio</label>
-                <input
-                    type="file"
-                    id="audioFile"
-                    accept="audio/*"
-                >
-            </div>
-
-            <div id="imageBox" class="hidden">
-                <label>Upload ảnh</label>
-                <input
-                    type="file"
-                    id="imageFile"
-                    accept="image/*"
-                >
-            </div>
-
-            <div class="grid">
-
-                <div id="timeBox" class="hidden">
-                    <label>Thời gian bắt đầu</label>
-                    <input
-                        type="text"
-                        id="startTime"
-                        value="00:00:00"
-                    >
-
-                    <label>Thời gian kết thúc</label>
-                    <input
-                        type="text"
-                        id="endTime"
-                        value="00:00:10"
-                    >
+                <div class="logo-icon">
+                    🎬
                 </div>
 
-                <div id="resizeBox" class="hidden">
-                    <label>Tỉ lệ video</label>
-                    <select id="ratio">
-                        <option value="9:16">9:16 - TikTok/Reels</option>
-                        <option value="16:9">16:9 - YouTube ngang</option>
-                        <option value="1:1">1:1 - Vuông</option>
-                        <option value="4:5">4:5 - Instagram</option>
-                    </select>
-                </div>
-
-                <div id="thumbnailBox" class="hidden">
-                    <label>Lấy thumbnail tại thời điểm</label>
-                    <input
-                        type="text"
-                        id="thumbnailTime"
-                        value="00:00:03"
-                    >
-                </div>
-
-                <div id="volumeBox" class="hidden">
-                    <label>Âm lượng</label>
-                    <select id="volume">
-                        <option value="0.5">Giảm 50%</option>
-                        <option value="1.5">Tăng 150%</option>
-                        <option value="2">Tăng 200%</option>
-                    </select>
-                </div>
-
-                <div id="speedBox" class="hidden">
-                    <label>Tốc độ</label>
-                    <select id="speed">
-                        <option value="0.5">0.5x</option>
-                        <option value="0.75">0.75x</option>
-                        <option value="1.25">1.25x</option>
-                        <option value="1.5">1.5x</option>
-                        <option value="2">2x</option>
-                    </select>
-                </div>
-
-                <div id="rotateBox" class="hidden">
-                    <label>Xoay / lật</label>
-                    <select id="rotateMode">
-                        <option value="right">Xoay phải 90°</option>
-                        <option value="left">Xoay trái 90°</option>
-                        <option value="hflip">Lật ngang</option>
-                        <option value="vflip">Lật dọc</option>
-                    </select>
-                </div>
-
-                <div id="watermarkBox" class="hidden">
-                    <label>Chữ watermark</label>
-                    <input
-                        type="text"
-                        id="watermarkText"
-                        value="@QuanEdit"
-                    >
-
-                    <label>Vị trí</label>
-                    <select id="watermarkPosition">
-                        <option value="bottom-right">Góc phải dưới</option>
-                        <option value="bottom-left">Góc trái dưới</option>
-                        <option value="top-right">Góc phải trên</option>
-                        <option value="top-left">Góc trái trên</option>
-                        <option value="center">Giữa màn hình</option>
-                    </select>
-                </div>
-
-                <div id="convertBox" class="hidden">
-                    <label>Định dạng xuất</label>
-                    <select id="format">
-                        <option value="mp4">MP4</option>
-                        <option value="webm">WebM</option>
-                        <option value="mov">MOV</option>
-                        <option value="mkv">MKV</option>
-                    </select>
-                </div>
-
-                <div id="loopBox" class="hidden">
-                    <label>Số lần lặp</label>
-                    <input
-                        type="number"
-                        id="loopCount"
-                        value="3"
-                        min="2"
-                        max="20"
-                    >
-                </div>
+                <span>
+                    Quan Video Tools
+                </span>
 
             </div>
 
-            <div class="tool-list">
-
-                <button class="purple" onclick="processTool('mp3')">
-                    Chuyển MP3
-                </button>
-
-                <button class="cyan" onclick="processTool('extract')">
-                    Tách âm thanh
-                </button>
-
-                <button class="green" onclick="processTool('compress')">
-                    Nén video
-                </button>
-
-                <button onclick="processTool('cut')">
-                    Cắt video
-                </button>
-
-                <button onclick="processTool('resize')">
-                    Resize video
-                </button>
-
-                <button onclick="processTool('thumbnail')">
-                    Tạo thumbnail
-                </button>
-
-                <button onclick="processTool('mute')">
-                    Tắt âm thanh
-                </button>
-
-                <button onclick="processTool('volume')">
-                    Tăng/giảm âm lượng
-                </button>
-
-                <button class="orange" onclick="processTool('replaceAudio')">
-                    Ghép nhạc
-                </button>
-
-                <button onclick="processTool('speed')">
-                    Tốc độ video
-                </button>
-
-                <button onclick="processTool('rotate')">
-                    Xoay / lật
-                </button>
-
-                <button class="pink" onclick="processTool('watermark')">
-                    Watermark chữ
-                </button>
-
-                <button onclick="processTool('convert')">
-                    Đổi định dạng
-                </button>
-
-                <button onclick="processTool('loop')">
-                    Loop video
-                </button>
-
-                <button class="orange" onclick="processTool('imageAudio')">
-                    Ảnh + nhạc → video
-                </button>
-
+            <div class="nav-badge">
+                Video tools for creators
             </div>
 
         </div>
 
-        <div
-            id="result"
-            class="result"
-        ></div>
+        <section class="hero">
 
-        <p class="note">
-            Lưu ý: Hỗ trợ file tối đa 500MB. Video càng dài thì xử lý càng lâu.
-        </p>
+            <div class="hero-badge">
+                Công cụ xử lý video online cho editor
+            </div>
+
+            <h1>
+                Chỉnh video nhanh hơn với
+                <span class="gradient-text">
+                    Quan Video Tools
+                </span>
+            </h1>
+
+            <p class="sub">
+                Upload video để chuyển MP3, nén dung lượng, cắt đoạn, resize TikTok/Reels, tạo thumbnail, ghép nhạc, watermark và nhiều công cụ khác.
+            </p>
+
+        </section>
+
+        <main class="main-card">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    <h2>
+                        Công cụ xử lý video
+                    </h2>
+
+                    <p>
+                        Chọn file, chọn tính năng, điền thông số rồi bấm chạy công cụ.
+                    </p>
+
+                </div>
+
+                <div class="status-pill">
+                    Hỗ trợ tối đa 500MB
+                </div>
+
+            </div>
+
+            <div class="content">
+
+                <div class="upload-zone">
+
+                    <div class="upload-title">
+
+                        <h3>
+                            1. Tải file lên
+                        </h3>
+
+                        <p>
+                            Chọn video chính. Một số công cụ sẽ cần thêm file nhạc hoặc ảnh.
+                        </p>
+
+                    </div>
+
+                    <div class="file-grid">
+
+                        <div class="file-field">
+
+                            <label>
+                                Upload video
+                            </label>
+
+                            <input
+                                type="file"
+                                id="videoFile"
+                                accept="video/*"
+                            >
+
+                        </div>
+
+                        <div
+                            id="audioBox"
+                            class="file-field hidden"
+                        >
+
+                            <label>
+                                Upload file nhạc / audio
+                            </label>
+
+                            <input
+                                type="file"
+                                id="audioFile"
+                                accept="audio/*"
+                            >
+
+                        </div>
+
+                        <div
+                            id="imageBox"
+                            class="file-field hidden"
+                        >
+
+                            <label>
+                                Upload ảnh
+                            </label>
+
+                            <input
+                                type="file"
+                                id="imageFile"
+                                accept="image/*"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="section-row">
+
+                    <div class="section-title">
+
+                        <h3>
+                            2. Chọn tính năng
+                        </h3>
+
+                        <p>
+                            Bấm chọn công cụ trước, sau đó điền thông số nếu có.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="tool-list">
+
+                    <button
+                        class="tool-btn purple"
+                        onclick="selectTool('mp3')"
+                        id="btn-mp3"
+                    >
+                        <span class="tool-name">
+                            Chuyển MP3
+                        </span>
+                        <span class="tool-desc">
+                            Lấy audio dạng MP3
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn cyan"
+                        onclick="selectTool('extract')"
+                        id="btn-extract"
+                    >
+                        <span class="tool-name">
+                            Tách âm thanh
+                        </span>
+                        <span class="tool-desc">
+                            Xuất audio từ video
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn green"
+                        onclick="selectTool('compress')"
+                        id="btn-compress"
+                    >
+                        <span class="tool-name">
+                            Nén video
+                        </span>
+                        <span class="tool-desc">
+                            Giảm dung lượng
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('cut')"
+                        id="btn-cut"
+                    >
+                        <span class="tool-name">
+                            Cắt video
+                        </span>
+                        <span class="tool-desc">
+                            Chọn đoạn cần lấy
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('resize')"
+                        id="btn-resize"
+                    >
+                        <span class="tool-name">
+                            Resize video
+                        </span>
+                        <span class="tool-desc">
+                            9:16, 16:9, 1:1
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('thumbnail')"
+                        id="btn-thumbnail"
+                    >
+                        <span class="tool-name">
+                            Tạo thumbnail
+                        </span>
+                        <span class="tool-desc">
+                            Lấy ảnh từ video
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('mute')"
+                        id="btn-mute"
+                    >
+                        <span class="tool-name">
+                            Tắt âm thanh
+                        </span>
+                        <span class="tool-desc">
+                            Video không tiếng
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('volume')"
+                        id="btn-volume"
+                    >
+                        <span class="tool-name">
+                            Âm lượng
+                        </span>
+                        <span class="tool-desc">
+                            Tăng hoặc giảm tiếng
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn orange"
+                        onclick="selectTool('replaceAudio')"
+                        id="btn-replaceAudio"
+                    >
+                        <span class="tool-name">
+                            Ghép nhạc
+                        </span>
+                        <span class="tool-desc">
+                            Thay audio video
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('speed')"
+                        id="btn-speed"
+                    >
+                        <span class="tool-name">
+                            Tốc độ video
+                        </span>
+                        <span class="tool-desc">
+                            Slow / speed up
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('rotate')"
+                        id="btn-rotate"
+                    >
+                        <span class="tool-name">
+                            Xoay / lật
+                        </span>
+                        <span class="tool-desc">
+                            Sửa chiều video
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn pink"
+                        onclick="selectTool('watermark')"
+                        id="btn-watermark"
+                    >
+                        <span class="tool-name">
+                            Watermark
+                        </span>
+                        <span class="tool-desc">
+                            Thêm chữ lên video
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('convert')"
+                        id="btn-convert"
+                    >
+                        <span class="tool-name">
+                            Đổi định dạng
+                        </span>
+                        <span class="tool-desc">
+                            MP4, WebM, MOV
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn"
+                        onclick="selectTool('loop')"
+                        id="btn-loop"
+                    >
+                        <span class="tool-name">
+                            Loop video
+                        </span>
+                        <span class="tool-desc">
+                            Lặp lại nhiều lần
+                        </span>
+                    </button>
+
+                    <button
+                        class="tool-btn orange"
+                        onclick="selectTool('imageAudio')"
+                        id="btn-imageAudio"
+                    >
+                        <span class="tool-name">
+                            Ảnh + nhạc
+                        </span>
+                        <span class="tool-desc">
+                            Tạo video từ ảnh
+                        </span>
+                    </button>
+
+                </div>
+
+                <div
+                    id="selectedToolText"
+                    class="selected-tool hidden"
+                ></div>
+
+                <div class="settings-panel">
+
+                    <div class="section-title">
+
+                        <h3>
+                            3. Tuỳ chỉnh
+                        </h3>
+
+                        <p>
+                            Các tuỳ chỉnh sẽ tự hiện theo tính năng bạn chọn.
+                        </p>
+
+                    </div>
+
+                    <div class="grid">
+
+                        <div id="timeBox" class="hidden">
+
+                            <label>
+                                Thời gian bắt đầu
+                            </label>
+
+                            <input
+                                type="text"
+                                id="startTime"
+                                value="00:00:00"
+                                placeholder="00:00:00"
+                            >
+
+                            <label>
+                                Thời gian kết thúc
+                            </label>
+
+                            <input
+                                type="text"
+                                id="endTime"
+                                value="00:00:10"
+                                placeholder="00:00:10"
+                            >
+
+                        </div>
+
+                        <div id="resizeBox" class="hidden">
+
+                            <label>
+                                Tỉ lệ video
+                            </label>
+
+                            <select id="ratio">
+                                <option value="9:16">9:16 - TikTok/Reels</option>
+                                <option value="16:9">16:9 - YouTube ngang</option>
+                                <option value="1:1">1:1 - Vuông</option>
+                                <option value="4:5">4:5 - Instagram</option>
+                            </select>
+
+                        </div>
+
+                        <div id="thumbnailBox" class="hidden">
+
+                            <label>
+                                Lấy thumbnail tại thời điểm
+                            </label>
+
+                            <input
+                                type="text"
+                                id="thumbnailTime"
+                                value="00:00:03"
+                                placeholder="00:00:03"
+                            >
+
+                        </div>
+
+                        <div id="volumeBox" class="hidden">
+
+                            <label>
+                                Âm lượng
+                            </label>
+
+                            <select id="volume">
+                                <option value="0.5">Giảm 50%</option>
+                                <option value="1.5">Tăng 150%</option>
+                                <option value="2">Tăng 200%</option>
+                            </select>
+
+                        </div>
+
+                        <div id="speedBox" class="hidden">
+
+                            <label>
+                                Tốc độ
+                            </label>
+
+                            <select id="speed">
+                                <option value="0.5">0.5x</option>
+                                <option value="0.75">0.75x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2">2x</option>
+                            </select>
+
+                        </div>
+
+                        <div id="rotateBox" class="hidden">
+
+                            <label>
+                                Xoay / lật
+                            </label>
+
+                            <select id="rotateMode">
+                                <option value="right">Xoay phải 90°</option>
+                                <option value="left">Xoay trái 90°</option>
+                                <option value="hflip">Lật ngang</option>
+                                <option value="vflip">Lật dọc</option>
+                            </select>
+
+                        </div>
+
+                        <div id="watermarkBox" class="hidden">
+
+                            <label>
+                                Chữ watermark
+                            </label>
+
+                            <input
+                                type="text"
+                                id="watermarkText"
+                                value="@QuanEdit"
+                            >
+
+                            <label>
+                                Vị trí
+                            </label>
+
+                            <select id="watermarkPosition">
+                                <option value="bottom-right">Góc phải dưới</option>
+                                <option value="bottom-left">Góc trái dưới</option>
+                                <option value="top-right">Góc phải trên</option>
+                                <option value="top-left">Góc trái trên</option>
+                                <option value="center">Giữa màn hình</option>
+                            </select>
+
+                        </div>
+
+                        <div id="convertBox" class="hidden">
+
+                            <label>
+                                Định dạng xuất
+                            </label>
+
+                            <select id="format">
+                                <option value="mp4">MP4</option>
+                                <option value="webm">WebM</option>
+                                <option value="mov">MOV</option>
+                                <option value="mkv">MKV</option>
+                            </select>
+
+                        </div>
+
+                        <div id="loopBox" class="hidden">
+
+                            <label>
+                                Số lần lặp
+                            </label>
+
+                            <input
+                                type="number"
+                                id="loopCount"
+                                value="3"
+                                min="2"
+                                max="20"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="run-btn"
+                    onclick="runSelectedTool()"
+                >
+                    Chạy công cụ
+                </button>
+
+                <div
+                    id="result"
+                    class="result"
+                ></div>
+
+                <p class="note">
+                    Lưu ý: Hỗ trợ file tối đa 500MB. Video càng dài thì xử lý càng lâu. File sau khi tải xuống sẽ được server tự xoá.
+                </p>
+
+            </div>
+
+        </main>
+
+        <div class="features">
+
+            <div class="feature-mini">
+                <strong>
+                    Tối ưu cho creator
+                </strong>
+                <span>
+                    Các công cụ phổ biến cho TikTok, Reels, Shorts và editor.
+                </span>
+            </div>
+
+            <div class="feature-mini">
+                <strong>
+                    Xử lý bằng FFmpeg
+                </strong>
+                <span>
+                    Nén, cắt, resize, chuyển định dạng và xử lý audio.
+                </span>
+            </div>
+
+            <div class="feature-mini">
+                <strong>
+                    Không cần cài app
+                </strong>
+                <span>
+                    Upload video, xử lý online và tải file kết quả về máy.
+                </span>
+            </div>
+
+        </div>
 
     </div>
 
     <script>
+        let selectedTool = "";
+
         const optionBoxes = [
             "audioBox",
             "imageBox",
@@ -431,58 +1263,145 @@
             "loopBox"
         ];
 
+        const toolNames = {
+            mp3: "Chuyển video sang MP3",
+            extract: "Tách âm thanh khỏi video",
+            compress: "Nén video",
+            cut: "Cắt video theo thời gian",
+            resize: "Resize video theo tỉ lệ",
+            thumbnail: "Tạo thumbnail từ video",
+            mute: "Tắt âm thanh video",
+            volume: "Tăng/giảm âm lượng",
+            replaceAudio: "Ghép nhạc vào video",
+            speed: "Tăng tốc / làm chậm video",
+            rotate: "Xoay / lật video",
+            watermark: "Thêm watermark chữ",
+            convert: "Chuyển định dạng video",
+            loop: "Làm video loop",
+            imageAudio: "Tạo video từ ảnh + nhạc"
+        };
+
         function hideAllBoxes(){
             optionBoxes.forEach(id => {
-                document.getElementById(id).classList.add("hidden");
+                document
+                    .getElementById(id)
+                    .classList
+                    .add("hidden");
             });
         }
 
-        function showBoxes(type){
+        function clearActiveButtons(){
+            const buttons =
+                document.querySelectorAll(".tool-btn");
+
+            buttons.forEach(button => {
+                button.classList.remove("active");
+            });
+        }
+
+        function selectTool(type){
+            selectedTool = type;
+
             hideAllBoxes();
+            clearActiveButtons();
+
+            const button =
+                document.getElementById(
+                    `btn-${type}`
+                );
+
+            if(button){
+                button.classList.add("active");
+            }
+
+            const selectedText =
+                document.getElementById("selectedToolText");
+
+            selectedText.classList.remove("hidden");
+
+            selectedText.innerHTML =
+                `Đã chọn: ${toolNames[type]}`;
 
             if(type === "cut"){
-                document.getElementById("timeBox").classList.remove("hidden");
+                document
+                    .getElementById("timeBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "resize"){
-                document.getElementById("resizeBox").classList.remove("hidden");
+                document
+                    .getElementById("resizeBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "thumbnail"){
-                document.getElementById("thumbnailBox").classList.remove("hidden");
+                document
+                    .getElementById("thumbnailBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "volume"){
-                document.getElementById("volumeBox").classList.remove("hidden");
+                document
+                    .getElementById("volumeBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "replaceAudio"){
-                document.getElementById("audioBox").classList.remove("hidden");
+                document
+                    .getElementById("audioBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "speed"){
-                document.getElementById("speedBox").classList.remove("hidden");
+                document
+                    .getElementById("speedBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "rotate"){
-                document.getElementById("rotateBox").classList.remove("hidden");
+                document
+                    .getElementById("rotateBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "watermark"){
-                document.getElementById("watermarkBox").classList.remove("hidden");
+                document
+                    .getElementById("watermarkBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "convert"){
-                document.getElementById("convertBox").classList.remove("hidden");
+                document
+                    .getElementById("convertBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "loop"){
-                document.getElementById("loopBox").classList.remove("hidden");
+                document
+                    .getElementById("loopBox")
+                    .classList
+                    .remove("hidden");
             }
 
             if(type === "imageAudio"){
-                document.getElementById("imageBox").classList.remove("hidden");
-                document.getElementById("audioBox").classList.remove("hidden");
+                document
+                    .getElementById("imageBox")
+                    .classList
+                    .remove("hidden");
+
+                document
+                    .getElementById("audioBox")
+                    .classList
+                    .remove("hidden");
             }
         }
 
@@ -530,11 +1449,18 @@
             return texts[type];
         }
 
-        async function processTool(type){
-            showBoxes(type);
-
+        async function runSelectedTool(){
             const result =
                 document.getElementById("result");
+
+            if(!selectedTool){
+                result.innerHTML =
+                    `<p class="error">
+                        Vui lòng chọn một tính năng trước.
+                    </p>`;
+
+                return;
+            }
 
             const videoFile =
                 document.getElementById("videoFile").files[0];
@@ -548,7 +1474,7 @@
             const formData =
                 new FormData();
 
-            if(type === "imageAudio"){
+            if(selectedTool === "imageAudio"){
                 if(!imageFile || !audioFile){
                     result.innerHTML =
                         `<p class="error">
@@ -571,7 +1497,7 @@
                 formData.append("video", videoFile);
             }
 
-            if(type === "replaceAudio"){
+            if(selectedTool === "replaceAudio"){
                 if(!audioFile){
                     result.innerHTML =
                         `<p class="error">
@@ -640,13 +1566,13 @@
 
             result.innerHTML =
                 `<p class="loading">
-                    ${getLoading(type)}
+                    ${getLoading(selectedTool)}
                 </p>`;
 
             try{
                 const response =
                     await fetch(
-                        getRoute(type),
+                        getRoute(selectedTool),
                         {
                             method:"POST",
                             body: formData
@@ -670,6 +1596,10 @@
                         <h3>
                             ${data.message}
                         </h3>
+
+                        <p style="color:#94a3b8; margin-top:8px;">
+                            File đã xử lý xong. Bấm nút bên dưới để tải về.
+                        </p>
 
                         <a
                             class="download-btn"
