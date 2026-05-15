@@ -954,17 +954,17 @@
                 <div class="card-title">
 
                     <h2>
-                        AI Prompt Generator
+                        AI Creator Tools
                     </h2>
 
                     <p>
-                        Tạo prompt miễn phí để copy sang ChatGPT, Gemini hoặc công cụ AI khác.
+                        Tạo caption, hook, hashtag, tiêu đề và mô tả video trực tiếp bằng AI.
                     </p>
 
                 </div>
 
                 <div class="status-pill">
-                    Free AI Prompt
+                    Gemini AI
                 </div>
 
             </div>
@@ -976,11 +976,11 @@
                     <div class="upload-title">
 
                         <h3>
-                            Tạo prompt nội dung video
+                            Nhập ý tưởng video
                         </h3>
 
                         <p>
-                            Nhập ý tưởng video, web sẽ tạo prompt hoàn chỉnh để bạn copy sang AI khác.
+                            Mô tả ngắn nội dung video của bạn, AI sẽ tạo nội dung đăng TikTok/Reels/Shorts ngay trên web.
                         </p>
 
                     </div>
@@ -993,7 +993,7 @@
 
                         <input
                             type="text"
-                            id="promptTopic"
+                            id="aiTopic"
                             placeholder="Ví dụ: video buồn về trưởng thành, edit xe Lamborghini, anime fantasy..."
                         >
 
@@ -1007,7 +1007,7 @@
                                 Nền tảng
                             </label>
 
-                            <select id="promptPlatform">
+                            <select id="aiPlatform">
                                 <option value="TikTok">TikTok</option>
                                 <option value="YouTube Shorts">YouTube Shorts</option>
                                 <option value="Facebook Reels">Facebook Reels</option>
@@ -1022,7 +1022,7 @@
                                 Phong cách
                             </label>
 
-                            <select id="promptStyle">
+                            <select id="aiStyle">
                                 <option value="viral, tự nhiên, dễ lên xu hướng">Viral</option>
                                 <option value="buồn, cảm xúc, sâu lắng">Buồn / cảm xúc</option>
                                 <option value="cinematic, hiện đại, cuốn hút">Cinematic</option>
@@ -1038,15 +1038,15 @@
                     <button
                         class="run-modal-btn"
                         style="width:100%; margin-top:18px;"
-                        onclick="generateFreePrompt()"
+                        onclick="generateAIContent()"
                     >
-                        Tạo prompt miễn phí
+                        Tạo nội dung bằng AI
                     </button>
 
                 </div>
 
                 <div
-                    id="promptResult"
+                    id="aiResult"
                     class="result"
                 ></div>
 
@@ -1649,22 +1649,22 @@
         }
 
 
-        function generateFreePrompt(){
+        async function generateAIContent(){
 
             const topic =
-                document.getElementById("promptTopic").value.trim();
+                document.getElementById("aiTopic").value;
 
             const platform =
-                document.getElementById("promptPlatform").value;
+                document.getElementById("aiPlatform").value;
 
             const style =
-                document.getElementById("promptStyle").value;
+                document.getElementById("aiStyle").value;
 
-            const promptResult =
-                document.getElementById("promptResult");
+            const aiResult =
+                document.getElementById("aiResult");
 
-            if(!topic){
-                promptResult.innerHTML =
+            if(!topic.trim()){
+                aiResult.innerHTML =
                     `<p class="error">
                         Vui lòng nhập chủ đề video trước.
                     </p>`;
@@ -1672,92 +1672,98 @@
                 return;
             }
 
-            const prompt = `Bạn là chuyên gia sáng tạo nội dung video ngắn cho ${platform}.
+            aiResult.innerHTML =
+                `<p class="loading">
+                    AI đang tạo nội dung...
+                </p>`;
 
-Hãy tạo nội dung cho video với thông tin sau:
+            try{
+                const response =
+                    await fetch(
+                        "/ai-caption",
+                        {
+                            method:"POST",
 
-- Chủ đề video: ${topic}
-- Nền tảng đăng: ${platform}
-- Phong cách mong muốn: ${style}
+                            headers:{
+                                "Content-Type":"application/json"
+                            },
 
-Yêu cầu trả lời bằng tiếng Việt, rõ ràng, dễ copy, gồm:
+                            body: JSON.stringify({
+                                topic,
+                                platform,
+                                style
+                            })
+                        }
+                    );
 
-1. Caption ngắn:
-- Viết 10 caption ngắn, cuốn hút, hợp video ngắn.
+                const data =
+                    await response.json();
 
-2. Hook mở đầu video:
-- Viết 10 câu mở đầu gây tò mò trong 1-2 giây đầu video.
+                if(data.error){
+                    aiResult.innerHTML =
+                        `<p class="error">
+                            ${data.error}
+                        </p>`;
 
-3. Hashtag:
-- Viết 15 hashtag phù hợp, không spam quá mức.
+                    return;
+                }
 
-4. Tiêu đề video:
-- Viết 10 tiêu đề ngắn, dễ gây chú ý.
+                aiResult.innerHTML = `
+                    <div class="success-card">
 
-5. Mô tả video:
-- Viết 5 mô tả ngắn phù hợp để đăng mạng xã hội.
+                        <h3>
+                            Nội dung AI đã tạo
+                        </h3>
 
-6. Gợi ý nhạc/vibe:
-- Gợi ý vibe nhạc phù hợp.
-- Gợi ý từ khóa tìm nhạc.
-- Không dùng tên bài hát bản quyền cụ thể nếu không chắc.
+                        <p style="color:#94a3b8; margin-top:8px;">
+                            AI đã tạo xong caption, hook, hashtag, tiêu đề và mô tả cho video của bạn.
+                        </p>
 
-Yêu cầu thêm:
-- Câu ngắn, tự nhiên, dễ đọc.
-- Hợp với creator/editor.
-- Có cảm xúc và dễ lên xu hướng.
-- Không nhắc rằng bạn là AI.`;
+                        <pre
+                            class="ai-output"
+                            id="aiOutputText"
+                        >${data.result}</pre>
 
-            promptResult.innerHTML = `
-                <div class="success-card">
+                        <button
+                            class="copy-ai-btn"
+                            onclick="copyAIResult()"
+                        >
+                            Copy nội dung AI
+                        </button>
 
-                    <h3>
-                        Prompt đã tạo xong
-                    </h3>
+                    </div>
+                `;
 
-                    <p style="color:#94a3b8; margin-top:8px;">
-                        Copy prompt này rồi dán vào ChatGPT, Gemini hoặc công cụ AI bạn muốn dùng.
-                    </p>
-
-                    <pre
-                        class="ai-output"
-                        id="generatedPrompt"
-                    >${prompt}</pre>
-
-                    <button
-                        class="copy-ai-btn"
-                        onclick="copyGeneratedPrompt()"
-                    >
-                        Copy prompt
-                    </button>
-
-                </div>
-            `;
+            }catch(error){
+                aiResult.innerHTML =
+                    `<p class="error">
+                        Có lỗi xảy ra khi gọi AI.
+                    </p>`;
+            }
         }
 
-        function copyGeneratedPrompt(){
+        async function copyAIResult(){
 
-            const promptElement =
-                document.getElementById("generatedPrompt");
+            const output =
+                document.getElementById("aiOutputText");
 
-            if(!promptElement){
+            if(!output){
                 return;
             }
 
-            const promptText =
-                promptElement.innerText;
-
             if(navigator.clipboard){
-                navigator.clipboard.writeText(promptText);
+                await navigator.clipboard.writeText(
+                    output.innerText
+                );
 
-                alert("Đã copy prompt!");
+                alert("Đã copy nội dung AI");
                 return;
             }
 
             const tempInput =
                 document.createElement("textarea");
 
-            tempInput.value = promptText;
+            tempInput.value = output.innerText;
 
             document.body.appendChild(tempInput);
 
@@ -1767,7 +1773,7 @@ Yêu cầu thêm:
 
             document.body.removeChild(tempInput);
 
-            alert("Đã copy prompt!");
+            alert("Đã copy nội dung AI");
         }
 
 
