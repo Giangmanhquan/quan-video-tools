@@ -7,7 +7,7 @@ const path = require("path");
 const fs = require("fs");
 const { execFile } = require("child_process");
 const { promisify } = require("util");
-const OpenAI = require("openai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const execFileAsync = promisify(execFile);
 
@@ -23,20 +23,18 @@ const outputDir = path.join(__dirname, "downloads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
 
-const AI_MODEL =
-    process.env.OPENAI_MODEL || "gpt-5.2";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+
+const genAI = new GoogleGenerativeAI(
+    process.env.GEMINI_API_KEY || ""
+);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
 
     filename: (req, file, cb) => {
-        const safeName =
-            file.originalname.replace(/\s+/g, "-");
-
-        cb(
-            null,
-            Date.now() + "-" + safeName
-        );
+        const safeName = file.originalname.replace(/\s+/g, "-");
+        cb(null, Date.now() + "-" + safeName);
     }
 });
 
@@ -55,9 +53,7 @@ const upload = multer({
 
         if (!ok) {
             return cb(
-                new Error(
-                    "Chỉ cho phép upload video, audio hoặc ảnh"
-                )
+                new Error("Chỉ cho phép upload video, audio hoặc ảnh")
             );
         }
 
@@ -121,24 +117,18 @@ function getWatermarkPosition(position) {
 }
 
 app.get("/", (req, res) => {
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
-/* AI CREATOR TOOLS */
+/* AI CREATOR TOOLS - GEMINI */
 
 app.post("/ai-caption", async (req, res) => {
     try {
-        const {
-            topic,
-            platform,
-            style
-        } = req.body;
+        const { topic, platform, style } = req.body;
 
-        if (!process.env.OPENAI_API_KEY) {
+        if (!process.env.GEMINI_API_KEY) {
             return res.status(500).json({
-                error: "Server chưa cấu hình OPENAI_API_KEY"
+                error: "Server chưa cấu hình GEMINI_API_KEY"
             });
         }
 
@@ -148,8 +138,8 @@ app.post("/ai-caption", async (req, res) => {
             });
         }
 
-        const openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY
+        const model = genAI.getGenerativeModel({
+            model: GEMINI_MODEL
         });
 
         const prompt = `
@@ -177,6 +167,11 @@ Hãy trả lời bằng tiếng Việt, rõ ràng, dễ copy, gồm các phần 
 5. Mô tả video:
 - Viết 5 mô tả ngắn phù hợp để đăng mạng xã hội.
 
+6. Gợi ý nhạc/vibe:
+- Gợi ý vibe nhạc phù hợp.
+- Gợi ý từ khóa tìm nhạc.
+- Không dùng tên bài hát bản quyền cụ thể nếu không chắc.
+
 Yêu cầu:
 - Ngôn ngữ tự nhiên, đúng vibe creator/editor.
 - Câu ngắn, dễ đọc, dễ dùng.
@@ -184,20 +179,17 @@ Yêu cầu:
 - Không nhắc rằng bạn là AI.
 `;
 
-        const response =
-            await openai.responses.create({
-                model: AI_MODEL,
-                input: prompt
-            });
+        const result = await model.generateContent(prompt);
+        const text = result.response.text();
 
         res.json({
             success: true,
-            result: response.output_text
+            result: text
         });
 
     } catch (error) {
-        console.log("Lỗi AI:", error.message);
-console.log(error);
+        console.log("Lỗi Gemini AI:", error.message);
+        console.log(error);
 
         res.status(500).json({
             error: "Lỗi tạo nội dung AI"
@@ -217,11 +209,8 @@ app.post("/convert-mp3", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("audio", "mp3");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("audio", "mp3");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -265,11 +254,8 @@ app.post("/extract-audio", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("extracted-audio", "m4a");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("extracted-audio", "m4a");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -312,11 +298,8 @@ app.post("/compress-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("compressed", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("compressed", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -354,12 +337,8 @@ app.post("/compress-video", upload.single("video"), async (req, res) => {
 app.post("/cut-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const start =
-            req.body.start || "00:00:00";
-
-        const end =
-            req.body.end || "00:00:10";
+        const start = req.body.start || "00:00:00";
+        const end = req.body.end || "00:00:10";
 
         if (!video) {
             return res.status(400).json({
@@ -367,11 +346,8 @@ app.post("/cut-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("cut", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("cut", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -407,9 +383,7 @@ app.post("/cut-video", upload.single("video"), async (req, res) => {
 app.post("/resize-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const ratio =
-            req.body.ratio || "9:16";
+        const ratio = req.body.ratio || "9:16";
 
         if (!video) {
             return res.status(400).json({
@@ -424,21 +398,15 @@ app.post("/resize-video", upload.single("video"), async (req, res) => {
             "4:5": "1080:1350"
         };
 
-        const target =
-            sizes[ratio] || sizes["9:16"];
-
-        const [w, h] =
-            target.split(":");
+        const target = sizes[ratio] || sizes["9:16"];
+        const [w, h] = target.split(":");
 
         const filter =
             `scale=${w}:${h}:force_original_aspect_ratio=decrease,` +
             `pad=${w}:${h}:(ow-iw)/2:(oh-ih)/2`;
 
-        const outputName =
-            makeOutputName("resized", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("resized", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -477,9 +445,7 @@ app.post("/resize-video", upload.single("video"), async (req, res) => {
 app.post("/thumbnail-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const time =
-            req.body.time || "00:00:03";
+        const time = req.body.time || "00:00:03";
 
         if (!video) {
             return res.status(400).json({
@@ -487,11 +453,8 @@ app.post("/thumbnail-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("thumbnail", "jpg");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("thumbnail", "jpg");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-ss", time,
@@ -534,11 +497,8 @@ app.post("/mute-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("muted", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("muted", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -573,9 +533,7 @@ app.post("/mute-video", upload.single("video"), async (req, res) => {
 app.post("/volume-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const volume =
-            req.body.volume || "1.5";
+        const volume = req.body.volume || "1.5";
 
         if (!video) {
             return res.status(400).json({
@@ -583,11 +541,8 @@ app.post("/volume-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("volume", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("volume", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -636,11 +591,8 @@ app.post(
                 });
             }
 
-            const outputName =
-                makeOutputName("music-video", "mp4");
-
-            const outputPath =
-                path.join(outputDir, outputName);
+            const outputName = makeOutputName("music-video", "mp4");
+            const outputPath = path.join(outputDir, outputName);
 
             await runFFmpeg([
                 "-i", video.path,
@@ -665,13 +617,8 @@ app.post(
         } catch (error) {
             console.log("Lỗi ghép nhạc:", error);
 
-            if (req.files?.video) {
-                deleteFile(req.files.video[0].path);
-            }
-
-            if (req.files?.audio) {
-                deleteFile(req.files.audio[0].path);
-            }
+            if (req.files?.video) deleteFile(req.files.video[0].path);
+            if (req.files?.audio) deleteFile(req.files.audio[0].path);
 
             res.status(500).json({
                 error: "Lỗi ghép nhạc vào video"
@@ -685,9 +632,7 @@ app.post(
 app.post("/speed-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const speed =
-            Number(req.body.speed || 1);
+        const speed = Number(req.body.speed || 1);
 
         if (!video) {
             return res.status(400).json({
@@ -703,11 +648,8 @@ app.post("/speed-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("speed", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("speed", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -744,9 +686,7 @@ app.post("/speed-video", upload.single("video"), async (req, res) => {
 app.post("/rotate-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const mode =
-            req.body.mode || "right";
+        const mode = req.body.mode || "right";
 
         if (!video) {
             return res.status(400).json({
@@ -761,14 +701,10 @@ app.post("/rotate-video", upload.single("video"), async (req, res) => {
             vflip: "vflip"
         };
 
-        const filter =
-            filters[mode] || filters.right;
+        const filter = filters[mode] || filters.right;
 
-        const outputName =
-            makeOutputName("rotate", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("rotate", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-i", video.path,
@@ -803,12 +739,8 @@ app.post("/rotate-video", upload.single("video"), async (req, res) => {
 app.post("/watermark-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const text =
-            safeText(req.body.text || "@QuanEdit");
-
-        const position =
-            req.body.position || "bottom-right";
+        const text = safeText(req.body.text || "@QuanEdit");
+        const position = req.body.position || "bottom-right";
 
         if (!video) {
             return res.status(400).json({
@@ -816,14 +748,10 @@ app.post("/watermark-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("watermark", "mp4");
+        const outputName = makeOutputName("watermark", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
-        const outputPath =
-            path.join(outputDir, outputName);
-
-        const pos =
-            getWatermarkPosition(position);
+        const pos = getWatermarkPosition(position);
 
         const drawText =
             `drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:` +
@@ -863,9 +791,7 @@ app.post("/watermark-video", upload.single("video"), async (req, res) => {
 app.post("/convert-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
-
-        const format =
-            req.body.format || "mp4";
+        const format = req.body.format || "mp4";
 
         if (!video) {
             return res.status(400).json({
@@ -873,20 +799,13 @@ app.post("/convert-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const allowed =
-            ["mp4", "webm", "mov", "mkv"];
+        const allowed = ["mp4", "webm", "mov", "mkv"];
+        const ext = allowed.includes(format) ? format : "mp4";
 
-        const ext =
-            allowed.includes(format) ? format : "mp4";
+        const outputName = makeOutputName("converted", ext);
+        const outputPath = path.join(outputDir, outputName);
 
-        const outputName =
-            makeOutputName("converted", ext);
-
-        const outputPath =
-            path.join(outputDir, outputName);
-
-        let args =
-            ["-i", video.path];
+        let args = ["-i", video.path];
 
         if (ext === "webm") {
             args.push(
@@ -934,14 +853,10 @@ app.post("/loop-video", upload.single("video"), async (req, res) => {
     try {
         const video = getVideoFile(req);
 
-        const count =
-            Math.max(
-                2,
-                Math.min(
-                    Number(req.body.count || 3),
-                    20
-                )
-            );
+        const count = Math.max(
+            2,
+            Math.min(Number(req.body.count || 3), 20)
+        );
 
         if (!video) {
             return res.status(400).json({
@@ -949,11 +864,8 @@ app.post("/loop-video", upload.single("video"), async (req, res) => {
             });
         }
 
-        const outputName =
-            makeOutputName("loop", "mp4");
-
-        const outputPath =
-            path.join(outputDir, outputName);
+        const outputName = makeOutputName("loop", "mp4");
+        const outputPath = path.join(outputDir, outputName);
 
         await runFFmpeg([
             "-stream_loop", String(count - 1),
@@ -1002,11 +914,8 @@ app.post(
                 });
             }
 
-            const outputName =
-                makeOutputName("image-music", "mp4");
-
-            const outputPath =
-                path.join(outputDir, outputName);
+            const outputName = makeOutputName("image-music", "mp4");
+            const outputPath = path.join(outputDir, outputName);
 
             await runFFmpeg([
                 "-loop", "1",
@@ -1035,13 +944,8 @@ app.post(
         } catch (error) {
             console.log("Lỗi tạo video ảnh + nhạc:", error);
 
-            if (req.files?.image) {
-                deleteFile(req.files.image[0].path);
-            }
-
-            if (req.files?.audio) {
-                deleteFile(req.files.audio[0].path);
-            }
+            if (req.files?.image) deleteFile(req.files.image[0].path);
+            if (req.files?.audio) deleteFile(req.files.audio[0].path);
 
             res.status(500).json({
                 error: "Lỗi tạo video từ ảnh + nhạc"
@@ -1053,16 +957,11 @@ app.post(
 /* TẢI FILE */
 
 app.get("/download/:filename", (req, res) => {
-    const filename =
-        req.params.filename;
-
-    const filePath =
-        path.join(outputDir, filename);
+    const filename = req.params.filename;
+    const filePath = path.join(outputDir, filename);
 
     if (!fs.existsSync(filePath)) {
-        return res.status(404).send(
-            "File không tồn tại"
-        );
+        return res.status(404).send("File không tồn tại");
     }
 
     res.download(filePath, filename, err => {
@@ -1074,8 +973,7 @@ app.get("/download/:filename", (req, res) => {
     });
 });
 
-const PORT =
-    process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server chạy tại port ${PORT}`);
