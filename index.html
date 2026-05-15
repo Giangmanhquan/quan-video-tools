@@ -35,10 +35,7 @@
         }
 
         body{
-            font-family:
-                Inter,
-                Arial,
-                sans-serif;
+            font-family: Inter, Arial, sans-serif;
 
             background:
                 radial-gradient(
@@ -97,8 +94,7 @@
             display:flex;
             align-items:center;
             justify-content:center;
-            box-shadow:
-                0 0 25px rgba(37,99,235,0.45);
+            box-shadow:0 0 25px rgba(37,99,235,0.45);
         }
 
         .nav-badge{
@@ -237,12 +233,6 @@
             font-size:14px;
         }
 
-        .file-grid{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:16px;
-        }
-
         .file-field{
             background:rgba(2,6,23,0.72);
             border:1px solid rgba(255,255,255,0.1);
@@ -330,28 +320,10 @@
             overflow:hidden;
         }
 
-        .tool-btn::after{
-            content:"";
-            position:absolute;
-            inset:0;
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(255,255,255,0.12),
-                    transparent
-                );
-            opacity:0;
-            transition:0.22s;
-        }
-
         .tool-btn:hover{
             transform:translateY(-3px);
             border-color:rgba(96,165,250,0.45);
             box-shadow:0 14px 35px rgba(0,0,0,0.25);
-        }
-
-        .tool-btn:hover::after{
-            opacity:1;
         }
 
         .tool-btn.active{
@@ -402,57 +374,6 @@
             background:linear-gradient(135deg, rgba(219,39,119,0.75), rgba(51,65,85,0.55));
         }
 
-        .selected-tool{
-            padding:17px;
-            border-radius:18px;
-            background:rgba(37,99,235,0.12);
-            color:#bfdbfe;
-            border:1px solid rgba(147,197,253,0.25);
-            font-weight:700;
-            margin-bottom:22px;
-            text-align:left;
-        }
-
-        .settings-panel{
-            background:rgba(2,6,23,0.42);
-            border:1px solid rgba(255,255,255,0.08);
-            border-radius:22px;
-            padding:20px;
-            margin-bottom:22px;
-        }
-
-        .grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:16px;
-        }
-
-        .run-btn{
-            width:100%;
-            padding:19px;
-            border:none;
-            border-radius:18px;
-            background:
-                linear-gradient(
-                    135deg,
-                    #22c55e,
-                    #16a34a
-                );
-            color:white;
-            font-size:17px;
-            font-weight:900;
-            cursor:pointer;
-            transition:0.22s;
-            box-shadow:
-                0 18px 40px rgba(34,197,94,0.25);
-        }
-
-        .run-btn:hover{
-            transform:translateY(-2px);
-            box-shadow:
-                0 24px 50px rgba(34,197,94,0.32);
-        }
-
         .result{
             margin-top:28px;
         }
@@ -486,10 +407,6 @@
             border-radius:22px;
             padding:25px;
             margin-top:25px;
-        }
-
-        .success-card h3{
-            margin-bottom:10px;
         }
 
         .download-btn{
@@ -552,6 +469,181 @@
 
         .hidden{
             display:none;
+        }
+
+        /* MODAL */
+
+        .modal-overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(2,6,23,0.78);
+            backdrop-filter:blur(10px);
+            display:none;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+            z-index:999;
+        }
+
+        .modal-overlay.show{
+            display:flex;
+        }
+
+        .modal{
+            width:100%;
+            max-width:560px;
+            max-height:90vh;
+            overflow-y:auto;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(15,23,42,0.98),
+                    rgba(2,6,23,0.98)
+                );
+            border:1px solid rgba(255,255,255,0.14);
+            border-radius:28px;
+            box-shadow:0 30px 100px rgba(0,0,0,0.6);
+            padding:26px;
+            animation:modalIn 0.22s ease;
+        }
+
+        @keyframes modalIn{
+            from{
+                opacity:0;
+                transform:translateY(18px) scale(0.96);
+            }
+            to{
+                opacity:1;
+                transform:translateY(0) scale(1);
+            }
+        }
+
+        .modal-header{
+            display:flex;
+            justify-content:space-between;
+            gap:16px;
+            align-items:flex-start;
+            margin-bottom:20px;
+        }
+
+        .modal-title h3{
+            font-size:24px;
+            margin-bottom:6px;
+        }
+
+        .modal-title p{
+            color:#94a3b8;
+            font-size:14px;
+            line-height:1.5;
+        }
+
+        .close-btn{
+            width:42px;
+            height:42px;
+            border:none;
+            border-radius:14px;
+            background:rgba(255,255,255,0.08);
+            color:white;
+            font-size:22px;
+            cursor:pointer;
+        }
+
+        .close-btn:hover{
+            background:rgba(239,68,68,0.25);
+        }
+
+        .modal-body{
+            display:grid;
+            gap:16px;
+        }
+
+        .modal-field{
+            background:rgba(15,23,42,0.85);
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:18px;
+            padding:16px;
+        }
+
+        .modal-actions{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+            margin-top:22px;
+        }
+
+        .cancel-btn,
+        .run-modal-btn{
+            padding:16px;
+            border:none;
+            border-radius:16px;
+            color:white;
+            font-weight:900;
+            cursor:pointer;
+        }
+
+        .cancel-btn{
+            background:#334155;
+        }
+
+        .run-modal-btn{
+            background:
+                linear-gradient(
+                    135deg,
+                    #22c55e,
+                    #16a34a
+                );
+        }
+
+        .cancel-btn:hover,
+        .run-modal-btn:hover{
+            transform:translateY(-2px);
+        }
+
+
+        /* AI CREATOR TOOLS */
+
+        .ai-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:16px;
+            margin-top:16px;
+        }
+
+        .ai-output{
+            white-space:pre-wrap;
+            text-align:left;
+            color:#e2e8f0;
+            line-height:1.7;
+            margin-top:18px;
+            font-family:Arial, sans-serif;
+            background:rgba(2,6,23,0.35);
+            border:1px solid rgba(255,255,255,0.08);
+            border-radius:16px;
+            padding:18px;
+            overflow:auto;
+        }
+
+        .copy-ai-btn{
+            width:100%;
+            margin-top:14px;
+            padding:14px;
+            border:none;
+            border-radius:14px;
+            color:white;
+            font-weight:900;
+            cursor:pointer;
+            background:#334155;
+        }
+
+        .copy-ai-btn:hover{
+            background:#475569;
+            transform:translateY(-2px);
+        }
+
+        @media(max-width:720px){
+            .ai-grid{
+                grid-template-columns:1fr;
+            }
         }
 
         @media(max-width:950px){
@@ -626,21 +718,13 @@
                 font-size:11.5px;
             }
 
-            .grid{
+            .modal{
+                padding:20px;
+                border-radius:22px;
+            }
+
+            .modal-actions{
                 grid-template-columns:1fr;
-            }
-
-            .run-btn{
-                position:sticky;
-                bottom:12px;
-                z-index:20;
-                box-shadow:
-                    0 18px 45px rgba(0,0,0,0.5);
-            }
-
-            .section-row{
-                flex-direction:column;
-                align-items:flex-start;
             }
         }
 
@@ -714,7 +798,7 @@
                     </h2>
 
                     <p>
-                        Chọn file, chọn tính năng, điền thông số rồi bấm chạy công cụ.
+                        Chọn video trước, sau đó bấm vào một tính năng để mở cửa sổ tuỳ chỉnh.
                     </p>
 
                 </div>
@@ -732,64 +816,26 @@
                     <div class="upload-title">
 
                         <h3>
-                            1. Tải file lên
+                            1. Tải video chính lên
                         </h3>
 
                         <p>
-                            Chọn video chính. Một số công cụ sẽ cần thêm file nhạc hoặc ảnh.
+                            Hầu hết công cụ cần video chính. Một số công cụ sẽ yêu cầu thêm ảnh hoặc nhạc trong cửa sổ riêng.
                         </p>
 
                     </div>
 
-                    <div class="file-grid">
+                    <div class="file-field">
 
-                        <div class="file-field">
+                        <label>
+                            Upload video
+                        </label>
 
-                            <label>
-                                Upload video
-                            </label>
-
-                            <input
-                                type="file"
-                                id="videoFile"
-                                accept="video/*"
-                            >
-
-                        </div>
-
-                        <div
-                            id="audioBox"
-                            class="file-field hidden"
+                        <input
+                            type="file"
+                            id="videoFile"
+                            accept="video/*"
                         >
-
-                            <label>
-                                Upload file nhạc / audio
-                            </label>
-
-                            <input
-                                type="file"
-                                id="audioFile"
-                                accept="audio/*"
-                            >
-
-                        </div>
-
-                        <div
-                            id="imageBox"
-                            class="file-field hidden"
-                        >
-
-                            <label>
-                                Upload ảnh
-                            </label>
-
-                            <input
-                                type="file"
-                                id="imageFile"
-                                accept="image/*"
-                            >
-
-                        </div>
 
                     </div>
 
@@ -804,7 +850,7 @@
                         </h3>
 
                         <p>
-                            Bấm chọn công cụ trước, sau đó điền thông số nếu có.
+                            Bấm vào một công cụ để mở cửa sổ nhập thông số.
                         </p>
 
                     </div>
@@ -813,397 +859,84 @@
 
                 <div class="tool-list">
 
-                    <button
-                        class="tool-btn purple"
-                        onclick="selectTool('mp3')"
-                        id="btn-mp3"
-                    >
-                        <span class="tool-name">
-                            Chuyển MP3
-                        </span>
-                        <span class="tool-desc">
-                            Lấy audio dạng MP3
-                        </span>
+                    <button class="tool-btn purple" onclick="openToolModal('mp3')" id="btn-mp3">
+                        <span class="tool-name">Chuyển MP3</span>
+                        <span class="tool-desc">Lấy audio dạng MP3</span>
                     </button>
 
-                    <button
-                        class="tool-btn cyan"
-                        onclick="selectTool('extract')"
-                        id="btn-extract"
-                    >
-                        <span class="tool-name">
-                            Tách âm thanh
-                        </span>
-                        <span class="tool-desc">
-                            Xuất audio từ video
-                        </span>
+                    <button class="tool-btn cyan" onclick="openToolModal('extract')" id="btn-extract">
+                        <span class="tool-name">Tách âm thanh</span>
+                        <span class="tool-desc">Xuất audio từ video</span>
                     </button>
 
-                    <button
-                        class="tool-btn green"
-                        onclick="selectTool('compress')"
-                        id="btn-compress"
-                    >
-                        <span class="tool-name">
-                            Nén video
-                        </span>
-                        <span class="tool-desc">
-                            Giảm dung lượng
-                        </span>
+                    <button class="tool-btn green" onclick="openToolModal('compress')" id="btn-compress">
+                        <span class="tool-name">Nén video</span>
+                        <span class="tool-desc">Giảm dung lượng</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('cut')"
-                        id="btn-cut"
-                    >
-                        <span class="tool-name">
-                            Cắt video
-                        </span>
-                        <span class="tool-desc">
-                            Chọn đoạn cần lấy
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('cut')" id="btn-cut">
+                        <span class="tool-name">Cắt video</span>
+                        <span class="tool-desc">Chọn đoạn cần lấy</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('resize')"
-                        id="btn-resize"
-                    >
-                        <span class="tool-name">
-                            Resize video
-                        </span>
-                        <span class="tool-desc">
-                            9:16, 16:9, 1:1
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('resize')" id="btn-resize">
+                        <span class="tool-name">Resize video</span>
+                        <span class="tool-desc">9:16, 16:9, 1:1</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('thumbnail')"
-                        id="btn-thumbnail"
-                    >
-                        <span class="tool-name">
-                            Tạo thumbnail
-                        </span>
-                        <span class="tool-desc">
-                            Lấy ảnh từ video
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('thumbnail')" id="btn-thumbnail">
+                        <span class="tool-name">Tạo thumbnail</span>
+                        <span class="tool-desc">Lấy ảnh từ video</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('mute')"
-                        id="btn-mute"
-                    >
-                        <span class="tool-name">
-                            Tắt âm thanh
-                        </span>
-                        <span class="tool-desc">
-                            Video không tiếng
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('mute')" id="btn-mute">
+                        <span class="tool-name">Tắt âm thanh</span>
+                        <span class="tool-desc">Video không tiếng</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('volume')"
-                        id="btn-volume"
-                    >
-                        <span class="tool-name">
-                            Âm lượng
-                        </span>
-                        <span class="tool-desc">
-                            Tăng hoặc giảm tiếng
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('volume')" id="btn-volume">
+                        <span class="tool-name">Âm lượng</span>
+                        <span class="tool-desc">Tăng hoặc giảm tiếng</span>
                     </button>
 
-                    <button
-                        class="tool-btn orange"
-                        onclick="selectTool('replaceAudio')"
-                        id="btn-replaceAudio"
-                    >
-                        <span class="tool-name">
-                            Ghép nhạc
-                        </span>
-                        <span class="tool-desc">
-                            Thay audio video
-                        </span>
+                    <button class="tool-btn orange" onclick="openToolModal('replaceAudio')" id="btn-replaceAudio">
+                        <span class="tool-name">Ghép nhạc</span>
+                        <span class="tool-desc">Thay audio video</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('speed')"
-                        id="btn-speed"
-                    >
-                        <span class="tool-name">
-                            Tốc độ video
-                        </span>
-                        <span class="tool-desc">
-                            Slow / speed up
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('speed')" id="btn-speed">
+                        <span class="tool-name">Tốc độ video</span>
+                        <span class="tool-desc">Slow / speed up</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('rotate')"
-                        id="btn-rotate"
-                    >
-                        <span class="tool-name">
-                            Xoay / lật
-                        </span>
-                        <span class="tool-desc">
-                            Sửa chiều video
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('rotate')" id="btn-rotate">
+                        <span class="tool-name">Xoay / lật</span>
+                        <span class="tool-desc">Sửa chiều video</span>
                     </button>
 
-                    <button
-                        class="tool-btn pink"
-                        onclick="selectTool('watermark')"
-                        id="btn-watermark"
-                    >
-                        <span class="tool-name">
-                            Watermark
-                        </span>
-                        <span class="tool-desc">
-                            Thêm chữ lên video
-                        </span>
+                    <button class="tool-btn pink" onclick="openToolModal('watermark')" id="btn-watermark">
+                        <span class="tool-name">Watermark</span>
+                        <span class="tool-desc">Thêm chữ lên video</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('convert')"
-                        id="btn-convert"
-                    >
-                        <span class="tool-name">
-                            Đổi định dạng
-                        </span>
-                        <span class="tool-desc">
-                            MP4, WebM, MOV
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('convert')" id="btn-convert">
+                        <span class="tool-name">Đổi định dạng</span>
+                        <span class="tool-desc">MP4, WebM, MOV</span>
                     </button>
 
-                    <button
-                        class="tool-btn"
-                        onclick="selectTool('loop')"
-                        id="btn-loop"
-                    >
-                        <span class="tool-name">
-                            Loop video
-                        </span>
-                        <span class="tool-desc">
-                            Lặp lại nhiều lần
-                        </span>
+                    <button class="tool-btn" onclick="openToolModal('loop')" id="btn-loop">
+                        <span class="tool-name">Loop video</span>
+                        <span class="tool-desc">Lặp lại nhiều lần</span>
                     </button>
 
-                    <button
-                        class="tool-btn orange"
-                        onclick="selectTool('imageAudio')"
-                        id="btn-imageAudio"
-                    >
-                        <span class="tool-name">
-                            Ảnh + nhạc
-                        </span>
-                        <span class="tool-desc">
-                            Tạo video từ ảnh
-                        </span>
+                    <button class="tool-btn orange" onclick="openToolModal('imageAudio')" id="btn-imageAudio">
+                        <span class="tool-name">Ảnh + nhạc</span>
+                        <span class="tool-desc">Tạo video từ ảnh</span>
                     </button>
 
                 </div>
 
-                <div
-                    id="selectedToolText"
-                    class="selected-tool hidden"
-                ></div>
-
-                <div class="settings-panel">
-
-                    <div class="section-title">
-
-                        <h3>
-                            3. Tuỳ chỉnh
-                        </h3>
-
-                        <p>
-                            Các tuỳ chỉnh sẽ tự hiện theo tính năng bạn chọn.
-                        </p>
-
-                    </div>
-
-                    <div class="grid">
-
-                        <div id="timeBox" class="hidden">
-
-                            <label>
-                                Thời gian bắt đầu
-                            </label>
-
-                            <input
-                                type="text"
-                                id="startTime"
-                                value="00:00:00"
-                                placeholder="00:00:00"
-                            >
-
-                            <label>
-                                Thời gian kết thúc
-                            </label>
-
-                            <input
-                                type="text"
-                                id="endTime"
-                                value="00:00:10"
-                                placeholder="00:00:10"
-                            >
-
-                        </div>
-
-                        <div id="resizeBox" class="hidden">
-
-                            <label>
-                                Tỉ lệ video
-                            </label>
-
-                            <select id="ratio">
-                                <option value="9:16">9:16 - TikTok/Reels</option>
-                                <option value="16:9">16:9 - YouTube ngang</option>
-                                <option value="1:1">1:1 - Vuông</option>
-                                <option value="4:5">4:5 - Instagram</option>
-                            </select>
-
-                        </div>
-
-                        <div id="thumbnailBox" class="hidden">
-
-                            <label>
-                                Lấy thumbnail tại thời điểm
-                            </label>
-
-                            <input
-                                type="text"
-                                id="thumbnailTime"
-                                value="00:00:03"
-                                placeholder="00:00:03"
-                            >
-
-                        </div>
-
-                        <div id="volumeBox" class="hidden">
-
-                            <label>
-                                Âm lượng
-                            </label>
-
-                            <select id="volume">
-                                <option value="0.5">Giảm 50%</option>
-                                <option value="1.5">Tăng 150%</option>
-                                <option value="2">Tăng 200%</option>
-                            </select>
-
-                        </div>
-
-                        <div id="speedBox" class="hidden">
-
-                            <label>
-                                Tốc độ
-                            </label>
-
-                            <select id="speed">
-                                <option value="0.5">0.5x</option>
-                                <option value="0.75">0.75x</option>
-                                <option value="1.25">1.25x</option>
-                                <option value="1.5">1.5x</option>
-                                <option value="2">2x</option>
-                            </select>
-
-                        </div>
-
-                        <div id="rotateBox" class="hidden">
-
-                            <label>
-                                Xoay / lật
-                            </label>
-
-                            <select id="rotateMode">
-                                <option value="right">Xoay phải 90°</option>
-                                <option value="left">Xoay trái 90°</option>
-                                <option value="hflip">Lật ngang</option>
-                                <option value="vflip">Lật dọc</option>
-                            </select>
-
-                        </div>
-
-                        <div id="watermarkBox" class="hidden">
-
-                            <label>
-                                Chữ watermark
-                            </label>
-
-                            <input
-                                type="text"
-                                id="watermarkText"
-                                value="@QuanEdit"
-                            >
-
-                            <label>
-                                Vị trí
-                            </label>
-
-                            <select id="watermarkPosition">
-                                <option value="bottom-right">Góc phải dưới</option>
-                                <option value="bottom-left">Góc trái dưới</option>
-                                <option value="top-right">Góc phải trên</option>
-                                <option value="top-left">Góc trái trên</option>
-                                <option value="center">Giữa màn hình</option>
-                            </select>
-
-                        </div>
-
-                        <div id="convertBox" class="hidden">
-
-                            <label>
-                                Định dạng xuất
-                            </label>
-
-                            <select id="format">
-                                <option value="mp4">MP4</option>
-                                <option value="webm">WebM</option>
-                                <option value="mov">MOV</option>
-                                <option value="mkv">MKV</option>
-                            </select>
-
-                        </div>
-
-                        <div id="loopBox" class="hidden">
-
-                            <label>
-                                Số lần lặp
-                            </label>
-
-                            <input
-                                type="number"
-                                id="loopCount"
-                                value="3"
-                                min="2"
-                                max="20"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <button
-                    class="run-btn"
-                    onclick="runSelectedTool()"
-                >
-                    Chạy công cụ
-                </button>
-
-                <div
-                    id="result"
-                    class="result"
-                ></div>
+                <div id="result" class="result"></div>
 
                 <p class="note">
                     Lưu ý: Hỗ trợ file tối đa 500MB. Video càng dài thì xử lý càng lâu. File sau khi tải xuống sẽ được server tự xoá.
@@ -1213,33 +946,189 @@
 
         </main>
 
+
+        <div class="main-card" style="margin-top:28px;">
+
+            <div class="card-header">
+
+                <div class="card-title">
+
+                    <h2>
+                        AI Creator Tools
+                    </h2>
+
+                    <p>
+                        Tạo caption, hook, hashtag, tiêu đề và mô tả video bằng AI.
+                    </p>
+
+                </div>
+
+                <div class="status-pill">
+                    AI Content
+                </div>
+
+            </div>
+
+            <div class="content">
+
+                <div class="upload-zone">
+
+                    <div class="upload-title">
+
+                        <h3>
+                            Nhập ý tưởng video
+                        </h3>
+
+                        <p>
+                            Mô tả ngắn nội dung video của bạn, AI sẽ gợi ý nội dung đăng TikTok/Reels/Shorts.
+                        </p>
+
+                    </div>
+
+                    <div class="file-field">
+
+                        <label>
+                            Chủ đề video
+                        </label>
+
+                        <input
+                            type="text"
+                            id="aiTopic"
+                            placeholder="Ví dụ: video buồn về trưởng thành, edit xe Lamborghini, anime fantasy..."
+                        >
+
+                    </div>
+
+                    <div class="ai-grid">
+
+                        <div class="file-field">
+
+                            <label>
+                                Nền tảng
+                            </label>
+
+                            <select id="aiPlatform">
+                                <option value="TikTok">TikTok</option>
+                                <option value="YouTube Shorts">YouTube Shorts</option>
+                                <option value="Facebook Reels">Facebook Reels</option>
+                                <option value="Instagram Reels">Instagram Reels</option>
+                            </select>
+
+                        </div>
+
+                        <div class="file-field">
+
+                            <label>
+                                Phong cách
+                            </label>
+
+                            <select id="aiStyle">
+                                <option value="viral, tự nhiên, dễ lên xu hướng">Viral</option>
+                                <option value="buồn, cảm xúc, sâu lắng">Buồn / cảm xúc</option>
+                                <option value="cinematic, hiện đại, cuốn hút">Cinematic</option>
+                                <option value="sang trọng, luxury, ngầu">Luxury / ngầu</option>
+                                <option value="anime, fantasy, thơ mộng">Anime / fantasy</option>
+                                <option value="hài hước, gần gũi, dễ chia sẻ">Hài hước</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="run-modal-btn"
+                        style="width:100%; margin-top:18px;"
+                        onclick="generateAIContent()"
+                    >
+                        Tạo nội dung bằng AI
+                    </button>
+
+                </div>
+
+                <div
+                    id="aiResult"
+                    class="result"
+                ></div>
+
+            </div>
+
+        </div>
+
+
         <div class="features">
 
             <div class="feature-mini">
-                <strong>
-                    Tối ưu cho creator
-                </strong>
-                <span>
-                    Các công cụ phổ biến cho TikTok, Reels, Shorts và editor.
-                </span>
+                <strong>Tối ưu cho creator</strong>
+                <span>Các công cụ phổ biến cho TikTok, Reels, Shorts và editor.</span>
             </div>
 
             <div class="feature-mini">
-                <strong>
-                    Xử lý bằng FFmpeg
-                </strong>
-                <span>
-                    Nén, cắt, resize, chuyển định dạng và xử lý audio.
-                </span>
+                <strong>Xử lý bằng FFmpeg</strong>
+                <span>Nén, cắt, resize, chuyển định dạng và xử lý audio.</span>
             </div>
 
             <div class="feature-mini">
-                <strong>
-                    Không cần cài app
-                </strong>
-                <span>
-                    Upload video, xử lý online và tải file kết quả về máy.
-                </span>
+                <strong>Không cần cài app</strong>
+                <span>Upload video, xử lý online và tải file kết quả về máy.</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+
+    <div
+        class="modal-overlay"
+        id="toolModal"
+    >
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <div class="modal-title">
+
+                    <h3 id="modalTitle">
+                        Tính năng
+                    </h3>
+
+                    <p id="modalDesc">
+                        Điền thông số rồi chạy công cụ.
+                    </p>
+
+                </div>
+
+                <button
+                    class="close-btn"
+                    onclick="closeToolModal()"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <div
+                class="modal-body"
+                id="modalBody"
+            ></div>
+
+            <div class="modal-actions">
+
+                <button
+                    class="cancel-btn"
+                    onclick="closeToolModal()"
+                >
+                    Huỷ
+                </button>
+
+                <button
+                    class="run-modal-btn"
+                    onclick="runSelectedTool()"
+                >
+                    Chạy công cụ này
+                </button>
+
             </div>
 
         </div>
@@ -1248,20 +1137,6 @@
 
     <script>
         let selectedTool = "";
-
-        const optionBoxes = [
-            "audioBox",
-            "imageBox",
-            "timeBox",
-            "resizeBox",
-            "thumbnailBox",
-            "volumeBox",
-            "speedBox",
-            "rotateBox",
-            "watermarkBox",
-            "convertBox",
-            "loopBox"
-        ];
 
         const toolNames = {
             mp3: "Chuyển video sang MP3",
@@ -1281,14 +1156,23 @@
             imageAudio: "Tạo video từ ảnh + nhạc"
         };
 
-        function hideAllBoxes(){
-            optionBoxes.forEach(id => {
-                document
-                    .getElementById(id)
-                    .classList
-                    .add("hidden");
-            });
-        }
+        const toolDescriptions = {
+            mp3: "Chuyển video thành file âm thanh MP3.",
+            extract: "Tách âm thanh từ video thành file audio.",
+            compress: "Nén video để giảm dung lượng.",
+            cut: "Cắt video theo thời gian bắt đầu và kết thúc.",
+            resize: "Đổi tỉ lệ video cho TikTok, Reels, YouTube hoặc Instagram.",
+            thumbnail: "Lấy một ảnh thumbnail từ video tại thời điểm bạn chọn.",
+            mute: "Xuất video không có âm thanh.",
+            volume: "Tăng hoặc giảm âm lượng video.",
+            replaceAudio: "Thay âm thanh gốc bằng file nhạc/audio mới.",
+            speed: "Tăng tốc hoặc làm chậm video.",
+            rotate: "Xoay hoặc lật video.",
+            watermark: "Thêm chữ watermark lên video.",
+            convert: "Chuyển video sang định dạng khác.",
+            loop: "Lặp lại video nhiều lần.",
+            imageAudio: "Tạo video dọc từ một ảnh và một file nhạc."
+        };
 
         function clearActiveButtons(){
             const buttons =
@@ -1299,110 +1183,227 @@
             });
         }
 
-        function selectTool(type){
+        function openToolModal(type){
             selectedTool = type;
 
-            hideAllBoxes();
             clearActiveButtons();
 
             const button =
-                document.getElementById(
-                    `btn-${type}`
-                );
+                document.getElementById(`btn-${type}`);
 
             if(button){
                 button.classList.add("active");
             }
 
-            const selectedText =
-                document.getElementById("selectedToolText");
+            document.getElementById("modalTitle").innerText =
+                toolNames[type];
 
-            selectedText.classList.remove("hidden");
+            document.getElementById("modalDesc").innerText =
+                toolDescriptions[type];
 
-            selectedText.innerHTML =
-                `Đã chọn: ${toolNames[type]}`;
+            document.getElementById("modalBody").innerHTML =
+                getModalFields(type);
+
+            document.getElementById("toolModal").classList.add("show");
+        }
+
+        function closeToolModal(){
+            document.getElementById("toolModal").classList.remove("show");
+        }
+
+        function getModalFields(type){
 
             if(type === "cut"){
-                document
-                    .getElementById("timeBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Thời gian bắt đầu</label>
+                        <input
+                            type="text"
+                            id="startTime"
+                            value="00:00:00"
+                            placeholder="00:00:00"
+                        >
+                    </div>
+
+                    <div class="modal-field">
+                        <label>Thời gian kết thúc</label>
+                        <input
+                            type="text"
+                            id="endTime"
+                            value="00:00:10"
+                            placeholder="00:00:10"
+                        >
+                    </div>
+                `;
             }
 
             if(type === "resize"){
-                document
-                    .getElementById("resizeBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Tỉ lệ video</label>
+                        <select id="ratio">
+                            <option value="9:16">9:16 - TikTok/Reels</option>
+                            <option value="16:9">16:9 - YouTube ngang</option>
+                            <option value="1:1">1:1 - Vuông</option>
+                            <option value="4:5">4:5 - Instagram</option>
+                        </select>
+                    </div>
+                `;
             }
 
             if(type === "thumbnail"){
-                document
-                    .getElementById("thumbnailBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Lấy thumbnail tại thời điểm</label>
+                        <input
+                            type="text"
+                            id="thumbnailTime"
+                            value="00:00:03"
+                            placeholder="00:00:03"
+                        >
+                    </div>
+                `;
             }
 
             if(type === "volume"){
-                document
-                    .getElementById("volumeBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Âm lượng</label>
+                        <select id="volume">
+                            <option value="0.5">Giảm 50%</option>
+                            <option value="1.5">Tăng 150%</option>
+                            <option value="2">Tăng 200%</option>
+                        </select>
+                    </div>
+                `;
             }
 
             if(type === "replaceAudio"){
-                document
-                    .getElementById("audioBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Upload file nhạc / audio</label>
+                        <input
+                            type="file"
+                            id="audioFile"
+                            accept="audio/*"
+                        >
+                    </div>
+                `;
             }
 
             if(type === "speed"){
-                document
-                    .getElementById("speedBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Tốc độ</label>
+                        <select id="speed">
+                            <option value="0.5">0.5x</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                        </select>
+                    </div>
+                `;
             }
 
             if(type === "rotate"){
-                document
-                    .getElementById("rotateBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Xoay / lật</label>
+                        <select id="rotateMode">
+                            <option value="right">Xoay phải 90°</option>
+                            <option value="left">Xoay trái 90°</option>
+                            <option value="hflip">Lật ngang</option>
+                            <option value="vflip">Lật dọc</option>
+                        </select>
+                    </div>
+                `;
             }
 
             if(type === "watermark"){
-                document
-                    .getElementById("watermarkBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Chữ watermark</label>
+                        <input
+                            type="text"
+                            id="watermarkText"
+                            value="@QuanEdit"
+                        >
+                    </div>
+
+                    <div class="modal-field">
+                        <label>Vị trí</label>
+                        <select id="watermarkPosition">
+                            <option value="bottom-right">Góc phải dưới</option>
+                            <option value="bottom-left">Góc trái dưới</option>
+                            <option value="top-right">Góc phải trên</option>
+                            <option value="top-left">Góc trái trên</option>
+                            <option value="center">Giữa màn hình</option>
+                        </select>
+                    </div>
+                `;
             }
 
             if(type === "convert"){
-                document
-                    .getElementById("convertBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Định dạng xuất</label>
+                        <select id="format">
+                            <option value="mp4">MP4</option>
+                            <option value="webm">WebM</option>
+                            <option value="mov">MOV</option>
+                            <option value="mkv">MKV</option>
+                        </select>
+                    </div>
+                `;
             }
 
             if(type === "loop"){
-                document
-                    .getElementById("loopBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Số lần lặp</label>
+                        <input
+                            type="number"
+                            id="loopCount"
+                            value="3"
+                            min="2"
+                            max="20"
+                        >
+                    </div>
+                `;
             }
 
             if(type === "imageAudio"){
-                document
-                    .getElementById("imageBox")
-                    .classList
-                    .remove("hidden");
+                return `
+                    <div class="modal-field">
+                        <label>Upload ảnh</label>
+                        <input
+                            type="file"
+                            id="imageFile"
+                            accept="image/*"
+                        >
+                    </div>
 
-                document
-                    .getElementById("audioBox")
-                    .classList
-                    .remove("hidden");
+                    <div class="modal-field">
+                        <label>Upload file nhạc / audio</label>
+                        <input
+                            type="file"
+                            id="audioFile"
+                            accept="audio/*"
+                        >
+                    </div>
+                `;
             }
+
+            return `
+                <div class="modal-field">
+                    <p style="color:#cbd5e1; line-height:1.6;">
+                        Tính năng này không cần điền thêm thông số.
+                        Chỉ cần chọn video chính rồi bấm
+                        <strong>Chạy công cụ này</strong>.
+                    </p>
+                </div>
+            `;
         }
 
         function getRoute(type){
@@ -1449,6 +1450,28 @@
             return texts[type];
         }
 
+        function getValue(id, fallback = ""){
+            const element =
+                document.getElementById(id);
+
+            if(!element){
+                return fallback;
+            }
+
+            return element.value || fallback;
+        }
+
+        function getFile(id){
+            const element =
+                document.getElementById(id);
+
+            if(!element || !element.files){
+                return null;
+            }
+
+            return element.files[0];
+        }
+
         async function runSelectedTool(){
             const result =
                 document.getElementById("result");
@@ -1463,13 +1486,13 @@
             }
 
             const videoFile =
-                document.getElementById("videoFile").files[0];
+                getFile("videoFile");
 
             const audioFile =
-                document.getElementById("audioFile").files[0];
+                getFile("audioFile");
 
             const imageFile =
-                document.getElementById("imageFile").files[0];
+                getFile("imageFile");
 
             const formData =
                 new FormData();
@@ -1480,6 +1503,7 @@
                         `<p class="error">
                             Vui lòng chọn cả ảnh và file nhạc.
                         </p>`;
+
                     return;
                 }
 
@@ -1491,6 +1515,7 @@
                         `<p class="error">
                             Vui lòng chọn video trước.
                         </p>`;
+
                     return;
                 }
 
@@ -1503,6 +1528,7 @@
                         `<p class="error">
                             Vui lòng chọn thêm file nhạc.
                         </p>`;
+
                     return;
                 }
 
@@ -1511,58 +1537,60 @@
 
             formData.append(
                 "start",
-                document.getElementById("startTime").value
+                getValue("startTime", "00:00:00")
             );
 
             formData.append(
                 "end",
-                document.getElementById("endTime").value
+                getValue("endTime", "00:00:10")
             );
 
             formData.append(
                 "ratio",
-                document.getElementById("ratio").value
+                getValue("ratio", "9:16")
             );
 
             formData.append(
                 "time",
-                document.getElementById("thumbnailTime").value
+                getValue("thumbnailTime", "00:00:03")
             );
 
             formData.append(
                 "volume",
-                document.getElementById("volume").value
+                getValue("volume", "1.5")
             );
 
             formData.append(
                 "speed",
-                document.getElementById("speed").value
+                getValue("speed", "1.5")
             );
 
             formData.append(
                 "mode",
-                document.getElementById("rotateMode").value
+                getValue("rotateMode", "right")
             );
 
             formData.append(
                 "text",
-                document.getElementById("watermarkText").value
+                getValue("watermarkText", "@QuanEdit")
             );
 
             formData.append(
                 "position",
-                document.getElementById("watermarkPosition").value
+                getValue("watermarkPosition", "bottom-right")
             );
 
             formData.append(
                 "format",
-                document.getElementById("format").value
+                getValue("format", "mp4")
             );
 
             formData.append(
                 "count",
-                document.getElementById("loopCount").value
+                getValue("loopCount", "3")
             );
+
+            closeToolModal();
 
             result.innerHTML =
                 `<p class="loading">
@@ -1587,6 +1615,7 @@
                         `<p class="error">
                             ${data.error}
                         </p>`;
+
                     return;
                 }
 
@@ -1618,6 +1647,121 @@
                     </p>`;
             }
         }
+
+
+        async function generateAIContent(){
+
+            const topic =
+                document.getElementById("aiTopic").value;
+
+            const platform =
+                document.getElementById("aiPlatform").value;
+
+            const style =
+                document.getElementById("aiStyle").value;
+
+            const aiResult =
+                document.getElementById("aiResult");
+
+            if(!topic.trim()){
+                aiResult.innerHTML =
+                    `<p class="error">
+                        Vui lòng nhập chủ đề video trước.
+                    </p>`;
+
+                return;
+            }
+
+            aiResult.innerHTML =
+                `<p class="loading">
+                    AI đang tạo nội dung...
+                </p>`;
+
+            try{
+                const response =
+                    await fetch(
+                        "/ai-caption",
+                        {
+                            method:"POST",
+
+                            headers:{
+                                "Content-Type":"application/json"
+                            },
+
+                            body: JSON.stringify({
+                                topic,
+                                platform,
+                                style
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if(data.error){
+                    aiResult.innerHTML =
+                        `<p class="error">
+                            ${data.error}
+                        </p>`;
+
+                    return;
+                }
+
+                aiResult.innerHTML = `
+                    <div class="success-card">
+
+                        <h3>
+                            Nội dung AI đã tạo
+                        </h3>
+
+                        <pre
+                            class="ai-output"
+                            id="aiOutputText"
+                        >${data.result}</pre>
+
+                        <button
+                            class="copy-ai-btn"
+                            onclick="copyAIResult()"
+                        >
+                            Copy nội dung AI
+                        </button>
+
+                    </div>
+                `;
+
+            }catch(error){
+                aiResult.innerHTML =
+                    `<p class="error">
+                        Có lỗi xảy ra khi gọi AI.
+                    </p>`;
+            }
+        }
+
+        async function copyAIResult(){
+            const output =
+                document.getElementById("aiOutputText");
+
+            if(!output){
+                return;
+            }
+
+            await navigator.clipboard.writeText(
+                output.innerText
+            );
+
+            alert("Đã copy nội dung AI");
+        }
+
+
+        document
+            .getElementById("toolModal")
+            .addEventListener("click", function(event){
+
+                if(event.target.id === "toolModal"){
+                    closeToolModal();
+                }
+            });
     </script>
 
 </body>
